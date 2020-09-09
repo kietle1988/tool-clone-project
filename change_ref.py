@@ -2,7 +2,7 @@
 import argparse
 import re
 import sys
-import os
+import os, fnmatch
 import shutil
 import subprocess
 import os.path
@@ -11,6 +11,19 @@ FROM_PROJECT_ID = '3997'
 TO_PROJECT_ID = '1234'
 FROM_PROJECT = 'cc-baccarat-3997'
 TO_PROJECT = 'cc-newgame-1234'
+
+def find(name, path):
+    for root, dirs, files in os.walk(path):
+        if name in files:
+            return os.path.join(root, name)
+
+def findFile(pattern, path):
+    result = []
+    for root, dirs, files in os.walk(path):
+        for name in files:
+            if fnmatch.fnmatch(name, pattern):
+                result.append(os.path.join(root, name))
+    return result
 
 def getFileNameAndUID(filePath) :
 #     print(filePath)
@@ -45,32 +58,48 @@ def replaceFileContent(filename, old_string, new_string):
         s = s.replace(old_string, new_string)
         f.write(s)
 
+def changeScriptRefInPrefab(filePath):
+    remove_uid, remove_file = getFileNameAndUID(filePath)
+
+    # Predict the file to replace
+    # Ex: from_name is "CardItem3997" ==> file to replace to_name is "CardItem1234"
+    by_file = remove_file.replace(FROM_PROJECT_ID, TO_PROJECT_ID)
+
+    # Find the to_uid
+    if by_file is None:
+        print('CANNOT FIND file ')
+        return
+
+    #Fixme: find('*.txt', '/path/to/dir')
+#     by_file_path = quick_scripts_path + '/_Scripts/' + by_file + '.js'
+    print(by_file)
+    by_file_path = find(by_file + '.js', quick_scripts_path + '/_Scripts')
+
+    by_uid, by_name = getFileNameAndUID(by_file_path)
+
+    print("Replace {0} in file {1} by {2} in file {3}".format(remove_uid, remove_file, by_uid, by_file))
+
+    # Replace from_uid by to_uid in all files (prefab)
+    curDir = to_project_dir + '/_Prefabs'
+    for root, dirs, files in os.walk(curDir):
+        for file in files:
+    #         if file.endswith(".prefab"):
+             replaceFileContent(os.path.join(root, file), remove_uid, by_uid)
+
 tool_path = os.path.dirname(os.path.realpath(__file__))
 root_path = os.path.abspath(os.path.join(tool_path, os.pardir))
 all_in_one = os.path.abspath(os.path.join(root_path, os.pardir))
 from_project_dir = root_path + '/' + FROM_PROJECT
 to_project_dir = root_path + '/' + TO_PROJECT
 quick_scripts_path = all_in_one + '/temp/quick-scripts/assets/' + TO_PROJECT
-filePath = quick_scripts_path + '/Scripts/Card/CardItem3997.js'
 
-remove_uid, remove_file = getFileNameAndUID(filePath)
+### CHANGE SCRIPTS REFERENCES IN PREFAB ###
+# filePath = quick_scripts_path + '/Scripts/Card/CardItem3997.js'
+# changeScriptRefInPrefab(filePath)
 
-# Predict the file to replace
-# Ex: from_name is "CardItem3997" ==> file to replace to_name is "CardItem1234"
-by_file = remove_file.replace(FROM_PROJECT_ID, TO_PROJECT_ID)
-
-# Find the to_uid
-if by_file is None:
-    print('CANNOT FIND file ', by_file)
-
-by_file_path = quick_scripts_path + '/_Scripts/Card/' + by_file + '.js'
-by_uid, by_name = getFileNameAndUID(by_file_path)
-
-print("Replace {0} in file {1} by {2} in file {3}".format(remove_uid, remove_file, by_uid, by_file))
-
-# Replace from_uid by to_uid in all files (prefab)
-curDir = to_project_dir + '/_Prefabs'
+curDir = quick_scripts_path + '/Scripts'
 for root, dirs, files in os.walk(curDir):
     for file in files:
-        if file.endswith(".prefab"):
-             replaceFileContent(os.path.join(root, file), remove_uid, by_uid)
+        if file.endswith(".js"):
+            print(os.path.join(root, file))
+            changeScriptRefInPrefab(os.path.join(root, file))
