@@ -156,6 +156,7 @@ def changeFontRef(filePath, fileName) :
             if file.endswith(".fire"):
                 replaceFileContent(os.path.join(root, file), str(to_replaced_uuid), str(replace_by_uuid))
 
+
 def changeSpineRef(filePath, fileName) :
     changeFontRef(filePath, fileName)
 
@@ -164,6 +165,36 @@ def changeSoundRef(filePath, fileName) :
 
 def changeAtlasRef(filePath, fileName) :
     changeFontRef(filePath, fileName)
+
+def getListUIDFromPackedFile(filePath) :
+    listUIDs = []
+    with open(filePath) as json_file:
+        data = json.load(json_file)
+        type = None
+        images = None
+        if 'type' in data:
+            type = data['type']
+            images = data['subMetas']
+
+        if type is None or images is None:
+            print("NOT A TEXTURE PACKER FILE ", filePath)
+        else :
+            for attribute, value in images.items():
+                listUIDs.append(value['uuid'])
+    return listUIDs
+
+def changeImageInPackerRef(filePath, fileName) :
+    fromUIDs = getListUIDFromPackedFile(filePath)
+    toFilePath = filePath.replace('Assets', '_Assets')
+    toUIDs = getListUIDFromPackedFile(toFilePath)
+
+    curDir = to_project_dir + '/_Prefabs'
+    for root, dirs, files in os.walk(curDir):
+        for file in files:
+            if file.endswith(".prefab"):
+                for i in range(len(fromUIDs)):
+                    replaceFileContent(os.path.join(root, file), str(fromUIDs[i]), str(toUIDs[i]))
+
 
 def changePrefabRef(filePath, fileName) :
     to_replaced_uuid = getPrefabUID(filePath)
@@ -250,6 +281,14 @@ for root, dirs, files in os.walk(curDir):
     for file in files:
         if file.endswith(".mp3.meta"):
             changeSoundRef(os.path.join(root, file), file)
+
+print('')
+print("############ 7.CHANGE IMAGE IN TEXTURE PACKER REF ############")
+curDir = to_project_dir + '/Assets'
+for root, dirs, files in os.walk(curDir):
+    for file in files:
+        if file.endswith(".plist.meta"):
+            changeImageInPackerRef(os.path.join(root, file), file)
 
 print('')
 print("############ 8.CHANGE PREFAB REF IN SCENE ############")

@@ -6,6 +6,7 @@ import os
 import shutil
 import subprocess
 import os.path
+import zipfile
 
 FROM_PROJECT_ID = '3997'
 TO_PROJECT_ID = '1234'
@@ -94,3 +95,5 @@ for root, dirs, files in os.walk(curDir):
     for file in files:
         if file.endswith(".fire"):
              replaceFileContent(os.path.join(root, file), FROM_PROJECT_ID, TO_PROJECT_ID)
+
+shutil.rmtree(from_project_dir, ignore_errors=True)
