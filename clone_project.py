@@ -81,7 +81,8 @@ curDir = to_project_dir + '/_Scripts'
 for root, dirs, files in os.walk(curDir):
     for file in files:
         if file.endswith(".js"):
-             replaceFileContent(os.path.join(root, file), FROM_PROJECT_ID, TO_PROJECT_ID)
+            if not file.endswith("Config" + TO_PROJECT_ID + ".js"):
+                 replaceFileContent(os.path.join(root, file), FROM_PROJECT_ID, TO_PROJECT_ID)
 
 # Rename file scene
 curDir = to_project_dir
