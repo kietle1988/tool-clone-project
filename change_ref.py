@@ -49,11 +49,12 @@ def getFileNameAndUID(filePath) :
 # Return the png uid
 # filePath:                 cc-newgame-1234/Assets/Background/Info_Baccarat.png.meta
 # fileName:                 Info_Baccarat.png.meta
+# ext:                      .png.meta, .jpg.meta
 # content in files:         "uuid": "d8e13355-4287-4f45-a24a-d6c35db8afb0",
-def getPNGUID(filePath, fileName):
+def getImageUID(filePath, fileName, ext):
     with open(filePath) as json_file:
         data = json.load(json_file)
-        fileName = fileName.replace('.png.meta', '')
+        fileName = fileName.replace(ext, '')
         result = ''
         if fileName not in data['subMetas']:
             print("FIND NO UUID FOR FILE ", filePath)
@@ -117,10 +118,10 @@ def changeScriptRefInPrefab(filePath):
             if file.endswith(".fire"):
                 replaceFileContent(os.path.join(root, file), remove_uid, by_uid)
 
-def changePNGRefInPrefab(filePath, fileName) :
-    to_replaced_uuid = getPNGUID(filePath, fileName)
+def changeImageRefInPrefab(filePath, fileName, ext) :
+    to_replaced_uuid = getImageUID(filePath, fileName, ext)
     replace_by_file_path = filePath.replace('Assets', '_Assets')
-    replace_by_uuid = getPNGUID(replace_by_file_path, fileName)
+    replace_by_uuid = getImageUID(replace_by_file_path, fileName, ext)
     if to_replaced_uuid == None or replace_by_uuid == None:
         return
 #     print("Replace {0} by {1} in file {2}".format(to_replaced_uuid, replace_by_uuid, replace_by_file_path))
@@ -159,6 +160,9 @@ def changeSpineRef(filePath, fileName) :
     changeFontRef(filePath, fileName)
 
 def changeSoundRef(filePath, fileName) :
+    changeFontRef(filePath, fileName)
+
+def changeAtlasRef(filePath, fileName) :
     changeFontRef(filePath, fileName)
 
 def changePrefabRef(filePath, fileName) :
@@ -206,12 +210,14 @@ for root, dirs, files in os.walk(curDir):
             changeScriptRefInPrefab(os.path.join(root, file))
 
 print('')
-print("############ 3.CHANGE ASSETS IMAGES .PNG REF IN PREFAB, SCENE ############")
+print("############ 3.CHANGE ASSETS IMAGES .PNG, JPG REF IN PREFAB, SCENE ############")
 curDir = to_project_dir + '/Assets'
 for root, dirs, files in os.walk(curDir):
     for file in files:
         if file.endswith(".png.meta"):
-            changePNGRefInPrefab(os.path.join(root, file), file)
+            changeImageRefInPrefab(os.path.join(root, file), file, ".png.meta")
+        if file.endswith(".jpg.meta"):
+            changeImageRefInPrefab(os.path.join(root, file), file, ".jpg.meta")
 
 print('')
 print("############ 4.CHANGE FONT REF IN PREFAB, SCENE ############")
@@ -228,6 +234,14 @@ for root, dirs, files in os.walk(curDir):
     for file in files:
         if file.endswith(".json.meta"):
             changeSpineRef(os.path.join(root, file), file)
+
+print('')
+print("############ 6.CHANGE ATLAS REF ############")
+curDir = to_project_dir + '/Assets'
+for root, dirs, files in os.walk(curDir):
+    for file in files:
+        if file.endswith(".plist.meta"):
+            changeAtlasRef(os.path.join(root, file), file)
 
 print('')
 print("############ 6.CHANGE SOUND REF ############")
