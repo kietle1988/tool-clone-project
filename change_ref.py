@@ -93,12 +93,16 @@ def changeScriptRefInPrefab(filePath):
 
     print("Replace {0} in file {1} by {2} in file {3}".format(remove_uid, remove_file, by_uid, by_file))
 
-    # Replace from_uid by to_uid in all files (prefab)
     curDir = to_project_dir + '/_Prefabs'
     for root, dirs, files in os.walk(curDir):
         for file in files:
-    #         if file.endswith(".prefab"):
              replaceFileContent(os.path.join(root, file), remove_uid, by_uid)
+
+    curDir = to_project_dir
+    for root, dirs, files in os.walk(curDir):
+        for file in files:
+            if file.endswith(".fire"):
+                replaceFileContent(os.path.join(root, file), remove_uid, by_uid)
 
 #cc-newgame-1234/Assets/Background/Info_Baccarat.png.meta
 def changePNGRefInPrefab(filePath, fileName) :
@@ -112,6 +116,12 @@ def changePNGRefInPrefab(filePath, fileName) :
     for root, dirs, files in os.walk(curDir):
         for file in files:
             if file.endswith(".prefab"):
+                replaceFileContent(os.path.join(root, file), str(to_replaced_uuid), str(replace_by_uuid))
+
+    curDir = to_project_dir
+    for root, dirs, files in os.walk(curDir):
+        for file in files:
+            if file.endswith(".fire"):
                 replaceFileContent(os.path.join(root, file), str(to_replaced_uuid), str(replace_by_uuid))
 
 tool_path = os.path.dirname(os.path.realpath(__file__))
