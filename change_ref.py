@@ -7,12 +7,13 @@ import shutil
 import subprocess
 import os.path
 import json
+import config
 
-FROM_PROJECT_ID = '3997'
-TO_PROJECT_ID = '1234'
-FROM_PROJECT = 'cc-baccarat-3997'
-TO_PROJECT = 'cc-newgame-1234'
-USER_DEFINE_TYPE = ['BigEyeRoadAnalyticItem3997','DishRoadAnalyticItem3997','ScoreRoadAnalyticItem3997','statisticAnalyticItem3997', 'BigRoadAnalyticItem3997']
+FROM_PROJECT_ID = config.FROM_PROJECT_ID
+TO_PROJECT_ID = config.TO_PROJECT_ID
+FROM_PROJECT = config.FROM_PROJECT
+TO_PROJECT = config.TO_PROJECT
+USER_DEFINE_TYPE = config.USER_DEFINE_TYPE
 
 def find(name, path):
     for root, dirs, files in os.walk(path):
@@ -195,6 +196,12 @@ def changeImageInPackerRef(filePath, fileName) :
                 for i in range(len(fromUIDs)):
                     replaceFileContent(os.path.join(root, file), str(fromUIDs[i]), str(toUIDs[i]))
 
+    curDir = to_project_dir
+    for root, dirs, files in os.walk(curDir):
+        for file in files:
+            if file.endswith(".fire"):
+                for i in range(len(fromUIDs)):
+                    replaceFileContent(os.path.join(root, file), str(fromUIDs[i]), str(toUIDs[i]))
 
 def changePrefabRef(filePath, fileName) :
     to_replaced_uuid = getPrefabUID(filePath)

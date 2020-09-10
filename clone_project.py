@@ -7,11 +7,12 @@ import shutil
 import subprocess
 import os.path
 import zipfile
+import config
 
-FROM_PROJECT_ID = '3997'
-TO_PROJECT_ID = '1234'
-FROM_PROJECT = 'cc-baccarat-3997'
-TO_PROJECT = 'cc-newgame-1234'
+FROM_PROJECT_ID = config.FROM_PROJECT_ID
+TO_PROJECT_ID = config.TO_PROJECT_ID
+FROM_PROJECT = config.FROM_PROJECT
+TO_PROJECT = config.TO_PROJECT
 
 def clone_folder(fromFolder, toFolder) :
     tool_path = os.path.dirname(os.path.realpath(__file__))
