@@ -54,7 +54,13 @@ def getPNGUID(filePath, fileName):
     with open(filePath) as json_file:
         data = json.load(json_file)
         fileName = fileName.replace('.png.meta', '')
-        return data['subMetas'][fileName]['uuid']
+        result = ''
+        if fileName not in data['subMetas']:
+#             return data['uuid']
+            print("FIND NO UUID FOR FILE ", filePath)
+            return None
+        else:
+            return data['subMetas'][fileName]['uuid']
 
 def replaceFileContent(filename, old_string, new_string):
     # Safely read the input filename using 'with'
@@ -96,16 +102,16 @@ def changeScriptRefInPrefab(filePath):
 
 #cc-newgame-1234/Assets/Background/Info_Baccarat.png.meta
 def changePNGRefInPrefab(filePath, fileName) :
-    print(filePath)
     to_replaced_uuid = getPNGUID(filePath, fileName)
     replace_by_file_path = filePath.replace('Assets', '_Assets')
     replace_by_uuid = getPNGUID(replace_by_file_path, fileName)
+    if to_replaced_uuid == None or replace_by_uuid == None:
+        return
     print("Replace {0} by {1} in file {2}".format(to_replaced_uuid, replace_by_uuid, replace_by_file_path))
     curDir = to_project_dir + '/_Prefabs'
     for root, dirs, files in os.walk(curDir):
         for file in files:
             if file.endswith(".prefab"):
-                print(file)
                 replaceFileContent(os.path.join(root, file), str(to_replaced_uuid), str(replace_by_uuid))
 
 tool_path = os.path.dirname(os.path.realpath(__file__))
@@ -115,16 +121,17 @@ from_project_dir = root_path + '/' + FROM_PROJECT
 to_project_dir = root_path + '/' + TO_PROJECT
 quick_scripts_path = all_in_one + '/temp/quick-scripts/assets/' + TO_PROJECT
 
-### 1.CHANGE SCRIPTS REFERENCES IN PREFAB ###
+print("############ 1.CHANGE SCRIPTS REFERENCES IN PREFAB ############")
 curDir = quick_scripts_path + '/Scripts'
 for root, dirs, files in os.walk(curDir):
     for file in files:
         if file.endswith(".js"):
             changeScriptRefInPrefab(os.path.join(root, file))
 
-### 2.CHANGE ASSETS IMAGES .PNG REF IN PREFAB ###
+print("")
+print("############ 2.CHANGE ASSETS IMAGES .PNG REF IN PREFAB ############")
 curDir = to_project_dir + '/Assets'
 for root, dirs, files in os.walk(curDir):
     for file in files:
-        if file.endswith("CardBack.png.meta"):
+        if file.endswith(".png.meta"):
             changePNGRefInPrefab(os.path.join(root, file), file)
