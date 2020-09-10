@@ -7,12 +7,12 @@ import shutil
 import subprocess
 import os.path
 import json
-import warnings
 
 FROM_PROJECT_ID = '3997'
 TO_PROJECT_ID = '1234'
 FROM_PROJECT = 'cc-baccarat-3997'
 TO_PROJECT = 'cc-newgame-1234'
+USER_DEFINE_TYPE = ['BigEyeRoadAnalyticItem3997','DishRoadAnalyticItem3997','ScoreRoadAnalyticItem3997','statisticAnalyticItem3997']
 
 def find(name, path):
     for root, dirs, files in os.walk(path):
@@ -154,7 +154,11 @@ def changeFontRef(filePath, fileName) :
         for file in files:
             if file.endswith(".fire"):
                 replaceFileContent(os.path.join(root, file), str(to_replaced_uuid), str(replace_by_uuid))
+
 def changeSpineRef(filePath, fileName) :
+    changeFontRef(filePath, fileName)
+
+def changeSoundRef(filePath, fileName) :
     changeFontRef(filePath, fileName)
 
 def changePrefabRef(filePath, fileName) :
@@ -183,15 +187,26 @@ from_project_dir = root_path + '/' + FROM_PROJECT
 to_project_dir = root_path + '/' + TO_PROJECT
 quick_scripts_path = all_in_one + '/temp/quick-scripts/assets/' + TO_PROJECT
 
-print("############ 1.CHANGE SCRIPTS REFERENCES IN PREFAB, SCENE ############")
+print("############ 1.CHANGE USER DEFINE TYPE IN PREFAB ############")
+curDir = to_project_dir + '/_Prefabs'
+for root, dirs, files in os.walk(curDir):
+    for file in files:
+        if file.endswith(".prefab"):
+            for fromCustomType in USER_DEFINE_TYPE:
+                toCustomType = fromCustomType.replace(FROM_PROJECT_ID, TO_PROJECT_ID)
+                if toCustomType is not None:
+                    replaceFileContent(os.path.join(root, file), fromCustomType, toCustomType)
+
+
+print("############ 2.CHANGE SCRIPTS REFERENCES IN PREFAB, SCENE ############")
 curDir = quick_scripts_path + '/Scripts'
 for root, dirs, files in os.walk(curDir):
     for file in files:
-        if file.endswith(".js"):
+        if file.endswith("StatisticsAnalytic3997.js"):
             changeScriptRefInPrefab(os.path.join(root, file))
 
 print('')
-print("############ 2.CHANGE ASSETS IMAGES .PNG REF IN PREFAB, SCENE ############")
+print("############ 3.CHANGE ASSETS IMAGES .PNG REF IN PREFAB, SCENE ############")
 curDir = to_project_dir + '/Assets'
 for root, dirs, files in os.walk(curDir):
     for file in files:
@@ -199,7 +214,7 @@ for root, dirs, files in os.walk(curDir):
             changePNGRefInPrefab(os.path.join(root, file), file)
 
 print('')
-print("############ 3.CHANGE FONT REF IN PREFAB, SCENE ############")
+print("############ 4.CHANGE FONT REF IN PREFAB, SCENE ############")
 curDir = to_project_dir + '/Assets'
 for root, dirs, files in os.walk(curDir):
     for file in files:
@@ -207,18 +222,23 @@ for root, dirs, files in os.walk(curDir):
             changeFontRef(os.path.join(root, file), file)
 
 print('')
-print("############ 4.CHANGE SKELETON REF ############")
+print("############ 5.CHANGE SKELETON REF ############")
 curDir = to_project_dir + '/Assets'
 for root, dirs, files in os.walk(curDir):
     for file in files:
         if file.endswith(".json.meta"):
             changeSpineRef(os.path.join(root, file), file)
 
-# print('')
-# print("############ 5.CHANGE SOUND REF ############")
+print('')
+print("############ 6.CHANGE SOUND REF ############")
+curDir = to_project_dir + '/Assets'
+for root, dirs, files in os.walk(curDir):
+    for file in files:
+        if file.endswith(".mp3.meta"):
+            changeSoundRef(os.path.join(root, file), file)
 
 print('')
-print("############ 6.CHANGE PREFAB REF IN SCENE ############")
+print("############ 7.CHANGE PREFAB REF IN SCENE ############")
 curDir = to_project_dir + '/Prefabs'
 for root, dirs, files in os.walk(curDir):
     for file in files:
