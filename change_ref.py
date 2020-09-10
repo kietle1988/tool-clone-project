@@ -244,7 +244,7 @@ for root, dirs, files in os.walk(curDir):
             changeAtlasRef(os.path.join(root, file), file)
 
 print('')
-print("############ 6.CHANGE SOUND REF ############")
+print("############ 7.CHANGE SOUND REF ############")
 curDir = to_project_dir + '/Assets'
 for root, dirs, files in os.walk(curDir):
     for file in files:
@@ -252,9 +252,27 @@ for root, dirs, files in os.walk(curDir):
             changeSoundRef(os.path.join(root, file), file)
 
 print('')
-print("############ 7.CHANGE PREFAB REF IN SCENE ############")
+print("############ 8.CHANGE PREFAB REF IN SCENE ############")
 curDir = to_project_dir + '/Prefabs'
 for root, dirs, files in os.walk(curDir):
     for file in files:
         if file.endswith(".prefab.meta"):
             changePrefabRef(os.path.join(root, file), file)
+
+print('')
+print("############ 9.CLEAN ############")
+# copy gameState<FROM_GAME_ID>.js to gameState<TO_GAME_ID>.js
+curDir = to_project_dir + '/_Scripts'
+gameStateName = 'gameState' + TO_PROJECT_ID + '.js'
+for root, dirs, files in os.walk(curDir):
+    for file in files:
+        if gameStateName in file:
+            oldGameStateName = gameStateName.replace(TO_PROJECT_ID, FROM_PROJECT_ID)
+            shutil.rmtree(os.path.join(root, oldGameStateName), ignore_errors=True)
+            shutil.copy(os.path.join(root, gameStateName), os.path.join(root, oldGameStateName))
+            replaceFileContent(os.path.join(root, oldGameStateName), TO_PROJECT_ID, FROM_PROJECT_ID)
+            break
+
+shutil.rmtree(to_project_dir + '/Scripts', ignore_errors=True)
+shutil.rmtree(to_project_dir + '/Prefabs', ignore_errors=True)
+shutil.rmtree(to_project_dir + '/Assets', ignore_errors=True)
