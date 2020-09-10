@@ -12,7 +12,7 @@ FROM_PROJECT_ID = '3997'
 TO_PROJECT_ID = '1234'
 FROM_PROJECT = 'cc-baccarat-3997'
 TO_PROJECT = 'cc-newgame-1234'
-USER_DEFINE_TYPE = ['BigEyeRoadAnalyticItem3997','DishRoadAnalyticItem3997','ScoreRoadAnalyticItem3997','statisticAnalyticItem3997']
+USER_DEFINE_TYPE = ['BigEyeRoadAnalyticItem3997','DishRoadAnalyticItem3997','ScoreRoadAnalyticItem3997','statisticAnalyticItem3997', 'BigRoadAnalyticItem3997']
 
 def find(name, path):
     for root, dirs, files in os.walk(path):
@@ -202,7 +202,7 @@ print("############ 2.CHANGE SCRIPTS REFERENCES IN PREFAB, SCENE ############")
 curDir = quick_scripts_path + '/Scripts'
 for root, dirs, files in os.walk(curDir):
     for file in files:
-        if file.endswith("StatisticsAnalytic3997.js"):
+        if file.endswith(".js"):
             changeScriptRefInPrefab(os.path.join(root, file))
 
 print('')
