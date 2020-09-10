@@ -154,6 +154,8 @@ def changeFontRef(filePath, fileName) :
         for file in files:
             if file.endswith(".fire"):
                 replaceFileContent(os.path.join(root, file), str(to_replaced_uuid), str(replace_by_uuid))
+def changeSpineRef(filePath, fileName) :
+    changeFontRef(filePath, fileName)
 
 def changePrefabRef(filePath, fileName) :
     to_replaced_uuid = getPrefabUID(filePath)
@@ -204,14 +206,19 @@ for root, dirs, files in os.walk(curDir):
         if file.endswith(".fnt.meta"):
             changeFontRef(os.path.join(root, file), file)
 
+print('')
+print("############ 4.CHANGE SKELETON REF ############")
+curDir = to_project_dir + '/Assets'
+for root, dirs, files in os.walk(curDir):
+    for file in files:
+        if file.endswith(".json.meta"):
+            changeSpineRef(os.path.join(root, file), file)
+
 # print('')
-# print("############ 4.CHANGE SKELETON REF ############")
-#
-# print('')
-# print("############ 4.CHANGE SOUND REF ############")
+# print("############ 5.CHANGE SOUND REF ############")
 
 print('')
-print("############ 4.CHANGE PREFAB REF IN SCENE ############")
+print("############ 6.CHANGE PREFAB REF IN SCENE ############")
 curDir = to_project_dir + '/Prefabs'
 for root, dirs, files in os.walk(curDir):
     for file in files:
