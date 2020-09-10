@@ -6,6 +6,8 @@ import os, fnmatch
 import shutil
 import subprocess
 import os.path
+import json
+import warnings
 
 FROM_PROJECT_ID = '3997'
 TO_PROJECT_ID = '1234'
@@ -26,7 +28,6 @@ def findFile(pattern, path):
     return result
 
 def getFileNameAndUID(filePath) :
-#     print(filePath)
     file1 = open(filePath, 'r')
     Lines = file1.readlines()
 
@@ -44,6 +45,16 @@ def getFileNameAndUID(filePath) :
     uid = infos[0][1:-1]
     file_name = infos[1][1:-1]
     return uid, file_name
+
+# Return the png uid
+# filePath:                 cc-newgame-1234/Assets/Background/Info_Baccarat.png.meta
+# fileName:                 Info_Baccarat.png.meta
+# content in files:         "uuid": "d8e13355-4287-4f45-a24a-d6c35db8afb0",
+def getPNGUID(filePath, fileName):
+    with open(filePath) as json_file:
+        data = json.load(json_file)
+        fileName = fileName.replace('.png.meta', '')
+        return data['subMetas'][fileName]['uuid']
 
 def replaceFileContent(filename, old_string, new_string):
     # Safely read the input filename using 'with'
@@ -70,9 +81,6 @@ def changeScriptRefInPrefab(filePath):
         print('CANNOT FIND file ')
         return
 
-    #Fixme: find('*.txt', '/path/to/dir')
-#     by_file_path = quick_scripts_path + '/_Scripts/' + by_file + '.js'
-    print(by_file)
     by_file_path = find(by_file + '.js', quick_scripts_path + '/_Scripts')
 
     by_uid, by_name = getFileNameAndUID(by_file_path)
@@ -86,6 +94,20 @@ def changeScriptRefInPrefab(filePath):
     #         if file.endswith(".prefab"):
              replaceFileContent(os.path.join(root, file), remove_uid, by_uid)
 
+#cc-newgame-1234/Assets/Background/Info_Baccarat.png.meta
+def changePNGRefInPrefab(filePath, fileName) :
+    print(filePath)
+    to_replaced_uuid = getPNGUID(filePath, fileName)
+    replace_by_file_path = filePath.replace('Assets', '_Assets')
+    replace_by_uuid = getPNGUID(replace_by_file_path, fileName)
+    print("Replace {0} by {1} in file {2}".format(to_replaced_uuid, replace_by_uuid, replace_by_file_path))
+    curDir = to_project_dir + '/_Prefabs'
+    for root, dirs, files in os.walk(curDir):
+        for file in files:
+            if file.endswith(".prefab"):
+                print(file)
+                replaceFileContent(os.path.join(root, file), str(to_replaced_uuid), str(replace_by_uuid))
+
 tool_path = os.path.dirname(os.path.realpath(__file__))
 root_path = os.path.abspath(os.path.join(tool_path, os.pardir))
 all_in_one = os.path.abspath(os.path.join(root_path, os.pardir))
@@ -93,13 +115,16 @@ from_project_dir = root_path + '/' + FROM_PROJECT
 to_project_dir = root_path + '/' + TO_PROJECT
 quick_scripts_path = all_in_one + '/temp/quick-scripts/assets/' + TO_PROJECT
 
-### CHANGE SCRIPTS REFERENCES IN PREFAB ###
-# filePath = quick_scripts_path + '/Scripts/Card/CardItem3997.js'
-# changeScriptRefInPrefab(filePath)
-
+### 1.CHANGE SCRIPTS REFERENCES IN PREFAB ###
 curDir = quick_scripts_path + '/Scripts'
 for root, dirs, files in os.walk(curDir):
     for file in files:
         if file.endswith(".js"):
-            print(os.path.join(root, file))
             changeScriptRefInPrefab(os.path.join(root, file))
+
+### 2.CHANGE ASSETS IMAGES .PNG REF IN PREFAB ###
+curDir = to_project_dir + '/Assets'
+for root, dirs, files in os.walk(curDir):
+    for file in files:
+        if file.endswith("CardBack.png.meta"):
+            changePNGRefInPrefab(os.path.join(root, file), file)
