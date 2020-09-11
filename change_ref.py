@@ -123,6 +123,7 @@ def changeScriptRefInPrefab(filePath):
 def changeImageRefInPrefab(filePath, fileName, ext) :
     to_replaced_uuid = getImageUID(filePath, fileName, ext)
     replace_by_file_path = filePath.replace('Assets', '_Assets')
+    replace_by_file_path = replace_by_file_path.replace(FROM_PROJECT_ID, TO_PROJECT_ID)
     replace_by_uuid = getImageUID(replace_by_file_path, fileName, ext)
     if to_replaced_uuid == None or replace_by_uuid == None:
         return
@@ -142,6 +143,7 @@ def changeImageRefInPrefab(filePath, fileName, ext) :
 def changeFontRef(filePath, fileName) :
     to_replaced_uuid = getFontUID(filePath)
     replace_by_file_path = filePath.replace('Assets', '_Assets')
+    replace_by_file_path = replace_by_file_path.replace(FROM_PROJECT_ID, TO_PROJECT_ID)
     replace_by_uuid = getFontUID(replace_by_file_path)
     if to_replaced_uuid == None or replace_by_uuid == None:
         return
@@ -188,6 +190,7 @@ def getListUIDFromPackedFile(filePath) :
 def changeImageInPackerRef(filePath, fileName) :
     fromUIDs = getListUIDFromPackedFile(filePath)
     toFilePath = filePath.replace('Assets', '_Assets')
+    toFilePath = toFilePath.replace(FROM_PROJECT_ID, TO_PROJECT_ID)
     toUIDs = getListUIDFromPackedFile(toFilePath)
 
     curDir = to_project_dir + '/_Prefabs'
@@ -207,6 +210,7 @@ def changeImageInPackerRef(filePath, fileName) :
 def changePrefabRef(filePath, fileName) :
     to_replaced_uuid = getPrefabUID(filePath)
     replace_by_file_path = filePath.replace('Prefabs', '_Prefabs')
+    replace_by_file_path = replace_by_file_path.replace(FROM_PROJECT_ID, TO_PROJECT_ID)
     replace_by_uuid = getPrefabUID(replace_by_file_path)
     if to_replaced_uuid == None or replace_by_uuid == None:
         return
