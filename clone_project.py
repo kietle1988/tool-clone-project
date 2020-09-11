@@ -61,26 +61,13 @@ shutil.rmtree(to_project_dir, ignore_errors=True)
 shutil.copytree(from_project_dir, to_project_dir)
 shutil.rmtree(to_project_dir + '/.git', ignore_errors=True)
 
-clone_folder("Assets", "_Assets")
-clone_folder("Prefabs", "_Prefabs")
-clone_folder("Scripts", "_Scripts")
+curDir = to_project_dir
+for dir in os.listdir(curDir):
+    if os.path.isdir(os.path.join(curDir, dir)) :
+        clone_folder(dir, "_" + dir)
 
-# # 3.Rename project id
-curDir = to_project_dir + '/_Prefabs'
-subprocess.call([sys.executable, tool_path+'/rename_files.py', curDir, FROM_PROJECT_ID, TO_PROJECT_ID])
-for dirname, dirnames, filenames in os.walk(curDir):
-    for subdirname in dirnames:
-        curDir = os.path.join(dirname, subdirname)
-        subprocess.call([sys.executable, tool_path+'/rename_files.py', curDir, FROM_PROJECT_ID, TO_PROJECT_ID])
-
-curDir = to_project_dir + '/_Assets'
-subprocess.call([sys.executable, tool_path+'/rename_files.py', curDir, FROM_PROJECT_ID, TO_PROJECT_ID])
-for dirname, dirnames, filenames in os.walk(curDir):
-    for subdirname in dirnames:
-        curDir = os.path.join(dirname, subdirname)
-        subprocess.call([sys.executable, tool_path+'/rename_files.py', curDir, FROM_PROJECT_ID, TO_PROJECT_ID])
-
-curDir = to_project_dir + '/_Scripts'
+# # 3.Rename file with ID
+curDir = to_project_dir
 subprocess.call([sys.executable, tool_path+'/rename_files.py', curDir, FROM_PROJECT_ID, TO_PROJECT_ID])
 for dirname, dirnames, filenames in os.walk(curDir):
     for subdirname in dirnames:
@@ -88,7 +75,7 @@ for dirname, dirnames, filenames in os.walk(curDir):
         subprocess.call([sys.executable, tool_path+'/rename_files.py', curDir, FROM_PROJECT_ID, TO_PROJECT_ID])
 
 # Replace gameID in file *.js
-curDir = to_project_dir + '/_Scripts'
+curDir = to_project_dir
 for root, dirs, files in os.walk(curDir):
     for file in files:
         if file.endswith(".js"):
