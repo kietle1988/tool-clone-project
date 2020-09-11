@@ -336,6 +336,10 @@ backupFile = root_path + '/' + FROM_PROJECT
 if os.path.isfile(backupFile + '.zip'):
     with ZipFile(backupFile + '.zip', 'r') as zipObj:
        zipObj.extractall(backupFile)
-shutil.rmtree(backupFile + '.zip', ignore_errors=True)
+
+try:
+    os.remove(backupFile + '.zip')
+except OSError:
+    pass
 
 os.popen('open -a CocosCreator')

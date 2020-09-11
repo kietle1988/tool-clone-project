@@ -47,6 +47,7 @@ root_path = os.path.abspath(os.path.join(tool_path, os.pardir))
 from_project_dir = root_path + '/' + FROM_PROJECT
 to_project_dir = root_path + '/' + TO_PROJECT
 
+os.popen('killall CocosCreator')
 print('##### BACKUP FILES ######')
 backupFile = root_path + '/' + FROM_PROJECT
 if os.path.isfile(backupFile + '.zip'):
