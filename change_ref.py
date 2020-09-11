@@ -8,6 +8,7 @@ import subprocess
 import os.path
 import json
 import config
+from zipfile import ZipFile
 
 FROM_PROJECT_ID = config.FROM_PROJECT_ID
 TO_PROJECT_ID = config.TO_PROJECT_ID
@@ -229,6 +230,7 @@ from_project_dir = root_path + '/' + FROM_PROJECT
 to_project_dir = root_path + '/' + TO_PROJECT
 quick_scripts_path = all_in_one + '/temp/quick-scripts/assets/' + TO_PROJECT
 
+os.popen('killall CocosCreator')
 print("############ 1.CHANGE USER DEFINE TYPE IN PREFAB ############")
 curDir = to_project_dir + '/_Prefabs'
 for root, dirs, files in os.walk(curDir):
@@ -290,7 +292,7 @@ for root, dirs, files in os.walk(curDir):
             changeSoundRef(os.path.join(root, file), file)
 
 print('')
-print("############ 7.CHANGE IMAGE IN TEXTURE PACKER REF ############")
+print("############ 8.CHANGE IMAGE IN TEXTURE PACKER REF ############")
 curDir = to_project_dir + '/Assets'
 for root, dirs, files in os.walk(curDir):
     for file in files:
@@ -298,7 +300,7 @@ for root, dirs, files in os.walk(curDir):
             changeImageInPackerRef(os.path.join(root, file), file)
 
 print('')
-print("############ 8.CHANGE PREFAB REF IN SCENE ############")
+print("############ 9.CHANGE PREFAB REF IN SCENE ############")
 curDir = to_project_dir + '/Prefabs'
 for root, dirs, files in os.walk(curDir):
     for file in files:
@@ -306,8 +308,7 @@ for root, dirs, files in os.walk(curDir):
             changePrefabRef(os.path.join(root, file), file)
 
 print('')
-print("############ 9.CLEAN ############")
-# copy gameState<FROM_GAME_ID>.js to gameState<TO_GAME_ID>.js
+print("############ 10.UPDATE gameState.js ############")
 curDir = to_project_dir + '/_Scripts'
 gameStateName = 'gameState' + TO_PROJECT_ID + '.js'
 for root, dirs, files in os.walk(curDir):
@@ -319,6 +320,22 @@ for root, dirs, files in os.walk(curDir):
             replaceFileContent(os.path.join(root, oldGameStateName), TO_PROJECT_ID, FROM_PROJECT_ID)
             break
 
+print('')
+print("############ 11.CLEAN ############")
 shutil.rmtree(to_project_dir + '/Scripts', ignore_errors=True)
 shutil.rmtree(to_project_dir + '/Prefabs', ignore_errors=True)
 shutil.rmtree(to_project_dir + '/Assets', ignore_errors=True)
+os.rename(to_project_dir + '/_Scripts', to_project_dir + '/Scripts')
+os.rename(to_project_dir + '/_Prefabs', to_project_dir + '/Prefabs')
+os.rename(to_project_dir + '/_Assets', to_project_dir + '/Assets')
+# shutil.rmtree(root_path + '/' + FROM_PROJECT, ignore_errors=True)
+# shutil.copytree(all_in_one + '/' + FROM_PROJECT, all_in_one + '/assets/' + FROM_PROJECT)
+# shutil.rmtree(all_in_one + '/' + FROM_PROJECT, ignore_errors=True)
+
+backupFile = root_path + '/' + FROM_PROJECT
+if os.path.isfile(backupFile + '.zip'):
+    with ZipFile(backupFile + '.zip', 'r') as zipObj:
+       zipObj.extractall(backupFile)
+shutil.rmtree(backupFile + '.zip', ignore_errors=True)
+
+os.popen('open -a CocosCreator')

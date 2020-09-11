@@ -6,8 +6,8 @@ import os
 import shutil
 import subprocess
 import os.path
-import zipfile
 import config
+from zipfile import ZipFile
 
 FROM_PROJECT_ID = config.FROM_PROJECT_ID
 TO_PROJECT_ID = config.TO_PROJECT_ID
@@ -46,12 +46,20 @@ tool_path = os.path.dirname(os.path.realpath(__file__))
 root_path = os.path.abspath(os.path.join(tool_path, os.pardir))
 from_project_dir = root_path + '/' + FROM_PROJECT
 to_project_dir = root_path + '/' + TO_PROJECT
+
+print('##### BACKUP FILES ######')
+backupFile = root_path + '/' + FROM_PROJECT
+if os.path.isfile(backupFile + '.zip'):
+    with ZipFile(backupFile + '.zip', 'r') as zipObj:
+       zipObj.extractall(backupFile)
+else:
+    shutil.make_archive(backupFile, 'zip', from_project_dir)
+
+print('##### COPY PROJECT ######')
 shutil.rmtree(to_project_dir, ignore_errors=True)
 shutil.copytree(from_project_dir, to_project_dir)
 shutil.rmtree(to_project_dir + '/.git', ignore_errors=True)
 
-# # 1.Copy Assets, Prefabs, Scripts
-# # 2.Remove all file meta
 clone_folder("Assets", "_Assets")
 clone_folder("Prefabs", "_Prefabs")
 clone_folder("Scripts", "_Scripts")
@@ -98,3 +106,4 @@ for root, dirs, files in os.walk(curDir):
              replaceFileContent(os.path.join(root, file), FROM_PROJECT_ID, TO_PROJECT_ID)
 
 shutil.rmtree(from_project_dir, ignore_errors=True)
+os.popen('open -a CocosCreator')
