@@ -311,11 +311,11 @@ for root, dirs, files in os.walk(curDir):
 
 print('')
 print("############ 10.UPDATE gameState.js ############")
-curDir = to_project_dir
+curDir = to_project_dir + '/' + PREFIX +'Scripts'
 gameStateName = 'gameState' + TO_PROJECT_ID + '.js'
 for root, dirs, files in os.walk(curDir):
     for file in files:
-        if gameStateName in file and PREFIX in root:
+        if gameStateName in file:
             oldGameStateName = gameStateName.replace(TO_PROJECT_ID, FROM_PROJECT_ID)
             shutil.rmtree(os.path.join(root, oldGameStateName), ignore_errors=True)
             shutil.copy(os.path.join(root, gameStateName), os.path.join(root, oldGameStateName))
