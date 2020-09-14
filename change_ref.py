@@ -93,7 +93,7 @@ def replaceFileContent(filename, old_string, new_string):
         s = s.replace(old_string, new_string)
         f.write(s)
 
-def changeScriptRefInPrefab(root_path, by_file_name):
+def changeScriptRef(root_path, by_file_name):
     by_file_path = os.path.join(root_path, by_file_name)
     by_uid, by_file = getFileNameAndUID(by_file_path)
     remove_file_path = os.path.join(root_path.replace(PREFIX, ''), by_file_name.replace(TO_PROJECT_ID, FROM_PROJECT_ID))
@@ -132,25 +132,26 @@ def changeImageRef(root_path, by_file_name, ext) :
             if file.endswith(".fire"):
                 replaceFileContent(os.path.join(root, file), str(remove_uid), str(by_uid))
 
-def changeFontRef(filePath, fileName) :
-    to_replaced_uuid = getFontUID(filePath)
-    replace_by_file_path = filePath.replace('Assets', PREFIX + 'Assets')
-    replace_by_file_path = replace_by_file_path.replace(FROM_PROJECT_ID, TO_PROJECT_ID)
-    replace_by_uuid = getFontUID(replace_by_file_path)
-    if to_replaced_uuid == None or replace_by_uuid == None:
+def changeFontRef(root_path, by_file_name) :
+    by_file_path = os.path.join(root_path, by_file_name)
+    by_uid = getFontUID(by_file_path)
+    remove_file_name = by_file_name.replace(TO_PROJECT_ID, FROM_PROJECT_ID)
+    remove_file_path = os.path.join(root_path.replace(PREFIX, ''), remove_file_name)
+    remove_uid = getFontUID(remove_file_path)
+    if remove_uid == None or by_uid == None:
         return
-#     print("Replace {0} by {1} in file {2}".format(to_replaced_uuid, replace_by_uuid, replace_by_file_path))
+
     curDir = to_project_dir
     for root, dirs, files in os.walk(curDir):
         for file in files:
-            if file.endswith(".prefab"):
-                replaceFileContent(os.path.join(root, file), str(to_replaced_uuid), str(replace_by_uuid))
+            if file.endswith(".prefab") and PREFIX in root:
+                replaceFileContent(os.path.join(root, file), str(remove_uid), str(by_uid))
 
     curDir = to_project_dir
     for root, dirs, files in os.walk(curDir):
         for file in files:
             if file.endswith(".fire"):
-                replaceFileContent(os.path.join(root, file), str(to_replaced_uuid), str(replace_by_uuid))
+                replaceFileContent(os.path.join(root, file), str(remove_uid), str(by_uid))
 
 
 def changeSpineRef(filePath, fileName) :
@@ -179,45 +180,49 @@ def getListUIDFromPackedFile(filePath) :
                 listUIDs.append(value['uuid'])
     return listUIDs
 
-def changeImageInPackerRef(filePath, fileName) :
-    fromUIDs = getListUIDFromPackedFile(filePath)
-    toFilePath = filePath.replace('Assets', PREFIX + 'Assets')
-    toFilePath = toFilePath.replace(FROM_PROJECT_ID, TO_PROJECT_ID)
-    toUIDs = getListUIDFromPackedFile(toFilePath)
-
-    curDir = to_project_dir
-    for root, dirs, files in os.walk(curDir):
-        for file in files:
-            if file.endswith(".prefab"):
-                for i in range(len(fromUIDs)):
-                    replaceFileContent(os.path.join(root, file), str(fromUIDs[i]), str(toUIDs[i]))
-
-    curDir = to_project_dir
-    for root, dirs, files in os.walk(curDir):
-        for file in files:
-            if file.endswith(".fire"):
-                for i in range(len(fromUIDs)):
-                    replaceFileContent(os.path.join(root, file), str(fromUIDs[i]), str(toUIDs[i]))
-
-def changePrefabRef(filePath, fileName) :
-    to_replaced_uuid = getPrefabUID(filePath)
-    replace_by_file_path = filePath.replace('Prefabs', PREFIX + 'Prefabs')
-    replace_by_file_path = replace_by_file_path.replace(FROM_PROJECT_ID, TO_PROJECT_ID)
-    replace_by_uuid = getPrefabUID(replace_by_file_path)
-    if to_replaced_uuid == None or replace_by_uuid == None:
+def changeImageInPackerRef(root_path, by_file_name) :
+    by_file_path = os.path.join(root_path, by_file_name)
+    by_uids = getListUIDFromPackedFile(by_file_path)
+    remove_file_name = by_file_name.replace(TO_PROJECT_ID, FROM_PROJECT_ID)
+    remove_file_path = os.path.join(root_path.replace(PREFIX, ''), remove_file_name)
+    remove_uids = getListUIDFromPackedFile(remove_file_path)
+    if by_uids == None or remove_uids == None:
         return
-#     print("Replace {0} by {1} in file {2}".format(to_replaced_uuid, replace_by_uuid, replace_by_file_path))
+
     curDir = to_project_dir
     for root, dirs, files in os.walk(curDir):
         for file in files:
-            if file.endswith(".prefab"):
-                replaceFileContent(os.path.join(root, file), str(to_replaced_uuid), str(replace_by_uuid))
+            if file.endswith(".prefab") and PREFIX in root:
+                for i in range(len(remove_uids)):
+                    replaceFileContent(os.path.join(root, file), str(remove_uids[i]), str(by_uids[i]))
 
     curDir = to_project_dir
     for root, dirs, files in os.walk(curDir):
         for file in files:
             if file.endswith(".fire"):
-                replaceFileContent(os.path.join(root, file), str(to_replaced_uuid), str(replace_by_uuid))
+                for i in range(len(remove_uids)):
+                    replaceFileContent(os.path.join(root, file), str(remove_uids[i]), str(by_uids[i]))
+
+def changePrefabRef(root_path, by_file_name) :
+    by_file_path = os.path.join(root_path, by_file_name)
+    by_uid = getPrefabUID(by_file_path)
+    remove_file_name = by_file_name.replace(TO_PROJECT_ID, FROM_PROJECT_ID)
+    remove_file_path = os.path.join(root_path.replace(PREFIX, ''), remove_file_name)
+    remove_uid = getPrefabUID(remove_file_path)
+    if remove_uid == None or by_uid == None:
+        return
+
+    curDir = to_project_dir
+    for root, dirs, files in os.walk(curDir):
+        for file in files:
+            if file.endswith(".prefab") and PREFIX in root:
+                replaceFileContent(os.path.join(root, file), str(remove_uid), str(by_uid))
+
+    curDir = to_project_dir
+    for root, dirs, files in os.walk(curDir):
+        for file in files:
+            if file.endswith(".fire"):
+                replaceFileContent(os.path.join(root, file), str(remove_uid), str(by_uid))
 
 tool_path = os.path.dirname(os.path.realpath(__file__))
 root_path = os.path.abspath(os.path.join(tool_path, os.pardir))
@@ -243,7 +248,7 @@ curDir = quick_scripts_path
 for root, dirs, files in os.walk(curDir):
     for file in files:
         if file.endswith(".js") and PREFIX in root:
-            changeScriptRefInPrefab(root, file)
+            changeScriptRef(root, file)
 
 print('')
 print("############ 3.CHANGE ASSETS IMAGES .PNG, JPG REF IN PREFAB, SCENE ############")
@@ -258,51 +263,51 @@ for root, dirs, files in os.walk(curDir):
 
 print('')
 print("############ 4.CHANGE FONT REF IN PREFAB, SCENE ############")
-curDir = to_project_dir + '/Assets'
+curDir = to_project_dir
 for root, dirs, files in os.walk(curDir):
     for file in files:
-        if file.endswith(".fnt.meta"):
-            changeFontRef(os.path.join(root, file), file)
+        if file.endswith(".fnt.meta") and PREFIX in root:
+            changeFontRef(root, file)
 
 print('')
 print("############ 5.CHANGE SKELETON REF ############")
-curDir = to_project_dir + '/Assets'
+curDir = to_project_dir
 for root, dirs, files in os.walk(curDir):
     for file in files:
-        if file.endswith(".json.meta"):
-            changeSpineRef(os.path.join(root, file), file)
+        if file.endswith(".json.meta") and PREFIX in root:
+            changeSpineRef(root, file)
 
 print('')
 print("############ 6.CHANGE ATLAS REF ############")
 curDir = to_project_dir + '/Assets'
 for root, dirs, files in os.walk(curDir):
     for file in files:
-        if file.endswith(".plist.meta"):
-            changeAtlasRef(os.path.join(root, file), file)
+        if file.endswith(".plist.meta") and PREFIX in root:
+            changeAtlasRef(root, file)
 
 print('')
 print("############ 7.CHANGE SOUND REF ############")
-curDir = to_project_dir + '/Assets'
+curDir = to_project_dir
 for root, dirs, files in os.walk(curDir):
     for file in files:
-        if file.endswith(".mp3.meta"):
-            changeSoundRef(os.path.join(root, file), file)
+        if file.endswith(".mp3.meta") and PREFIX in root:
+            changeSoundRef(root, file)
 
 print('')
 print("############ 8.CHANGE IMAGE IN TEXTURE PACKER REF ############")
-curDir = to_project_dir + '/Assets'
+curDir = to_project_dir
 for root, dirs, files in os.walk(curDir):
     for file in files:
         if file.endswith(".plist.meta"):
-            changeImageInPackerRef(os.path.join(root, file), file)
+            changeImageInPackerRef(root, file)
 
 print('')
 print("############ 9.CHANGE PREFAB REF IN SCENE ############")
-curDir = to_project_dir + '/Prefabs'
+curDir = to_project_dir
 for root, dirs, files in os.walk(curDir):
     for file in files:
-        if file.endswith(".prefab.meta"):
-            changePrefabRef(os.path.join(root, file), file)
+        if file.endswith(".prefab.meta") and PREFIX in root:
+            changePrefabRef(root, file)
 
 print('')
 print("############ 10.UPDATE gameState.js ############")
@@ -319,15 +324,13 @@ for root, dirs, files in os.walk(curDir):
 
 print('')
 print("############ 11.CLEAN ############")
-shutil.rmtree(to_project_dir + '/Scripts', ignore_errors=True)
-shutil.rmtree(to_project_dir + '/Prefabs', ignore_errors=True)
-shutil.rmtree(to_project_dir + '/Assets', ignore_errors=True)
-os.rename(to_project_dir + '/' + PREFIX + 'Scripts', to_project_dir + '/Scripts')
-os.rename(to_project_dir + '/' + PREFIX + 'Prefabs', to_project_dir + '/Prefabs')
-os.rename(to_project_dir + '/' + PREFIX + 'Assets', to_project_dir + '/Assets')
-# shutil.rmtree(root_path + '/' + FROM_PROJECT, ignore_errors=True)
-# shutil.copytree(all_in_one + '/' + FROM_PROJECT, all_in_one + '/assets/' + FROM_PROJECT)
-# shutil.rmtree(all_in_one + '/' + FROM_PROJECT, ignore_errors=True)
+curDir = to_project_dir
+for dir in os.listdir(curDir):
+    full_dir = os.path.join(curDir, dir)
+    if os.path.isdir(full_dir) and PREFIX in full_dir:
+        old_dir = full_dir.replace(PREFIX, '')
+        shutil.rmtree(old_dir, ignore_errors=True)
+        os.rename(full_dir, old_dir)
 
 backupFile = root_path + '/' + FROM_PROJECT
 if os.path.isfile(backupFile + '.zip'):
