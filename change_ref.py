@@ -99,8 +99,6 @@ def changeScriptRefInPrefab(root_path, by_file_name):
     remove_file_path = os.path.join(root_path.replace(PREFIX, ''), by_file_name.replace(TO_PROJECT_ID, FROM_PROJECT_ID))
     remove_uid, remove_name = getFileNameAndUID(remove_file_path)
 
-#     print("Replace {0} in file {1} by {2} in file {3}".format(remove_uid, remove_file, by_uid, by_file))
-
     curDir = to_project_dir
     for root, dirs, files in os.walk(curDir):
         for file in files:
@@ -113,25 +111,26 @@ def changeScriptRefInPrefab(root_path, by_file_name):
             if file.endswith(".fire"):
                 replaceFileContent(os.path.join(root, file), remove_uid, by_uid)
 
-def changeImageRefInPrefab(filePath, fileName, ext) :
-    to_replaced_uuid = getImageUID(filePath, fileName, ext)
-    replace_by_file_path = filePath.replace('Assets', PREFIX + 'Assets')
-    replace_by_file_path = replace_by_file_path.replace(FROM_PROJECT_ID, TO_PROJECT_ID)
-    replace_by_uuid = getImageUID(replace_by_file_path, fileName, ext)
-    if to_replaced_uuid == None or replace_by_uuid == None:
+def changeImageRef(root_path, by_file_name, ext) :
+    by_file_path = os.path.join(root_path, by_file_name)
+    by_uid = getImageUID(by_file_path, by_file_name, ext)
+    remove_file_name = by_file_name.replace(TO_PROJECT_ID, FROM_PROJECT_ID)
+    remove_file_path = os.path.join(root_path.replace(PREFIX, ''), remove_file_name)
+    remove_uid = getImageUID(remove_file_path, remove_file_name, ext)
+    if remove_uid == None or by_uid == None:
         return
-#     print("Replace {0} by {1} in file {2}".format(to_replaced_uuid, replace_by_uuid, replace_by_file_path))
+
     curDir = to_project_dir
     for root, dirs, files in os.walk(curDir):
         for file in files:
-            if file.endswith(".prefab"):
-                replaceFileContent(os.path.join(root, file), str(to_replaced_uuid), str(replace_by_uuid))
+            if file.endswith(".prefab") and PREFIX in root:
+                replaceFileContent(os.path.join(root, file), str(remove_uid), str(by_uid))
 
     curDir = to_project_dir
     for root, dirs, files in os.walk(curDir):
         for file in files:
             if file.endswith(".fire"):
-                replaceFileContent(os.path.join(root, file), str(to_replaced_uuid), str(replace_by_uuid))
+                replaceFileContent(os.path.join(root, file), str(remove_uid), str(by_uid))
 
 def changeFontRef(filePath, fileName) :
     to_replaced_uuid = getFontUID(filePath)
@@ -246,25 +245,16 @@ for root, dirs, files in os.walk(curDir):
         if file.endswith(".js") and PREFIX in root:
             changeScriptRefInPrefab(root, file)
 
-# curDir = quick_scripts_path
-# for dir in os.listdir(curDir):
-#     if os.path.isdir(os.path.join(curDir, dir)) :
-#         if dir.startswith(PREFIX):
-#             print("==>>",dir)
-#             for root, dirs, files in os.walk(os.path.join(curDir, dir)):
-#                 for file in files:
-#                     if file.endswith(".js"):
-#                         changeScriptRefInPrefab(os.path.join(root, file))
-
 print('')
 print("############ 3.CHANGE ASSETS IMAGES .PNG, JPG REF IN PREFAB, SCENE ############")
-curDir = to_project_dir + '/Assets'
+curDir = to_project_dir
 for root, dirs, files in os.walk(curDir):
     for file in files:
-        if file.endswith(".png.meta"):
-            changeImageRefInPrefab(os.path.join(root, file), file, ".png.meta")
-        if file.endswith(".jpg.meta"):
-            changeImageRefInPrefab(os.path.join(root, file), file, ".jpg.meta")
+        if PREFIX in root:
+            if file.endswith(".png.meta"):
+                changeImageRef(root, file, ".png.meta")
+            if file.endswith(".jpg.meta"):
+                changeImageRef(root, file, ".jpg.meta")
 
 print('')
 print("############ 4.CHANGE FONT REF IN PREFAB, SCENE ############")
