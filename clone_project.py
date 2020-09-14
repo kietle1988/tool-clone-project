@@ -73,13 +73,14 @@ subprocess.call([sys.executable, tool_path+'/rename_files.py', curDir, FROM_PROJ
 for dirname, dirnames, filenames in os.walk(curDir):
     for subdirname in dirnames:
         curDir = os.path.join(dirname, subdirname)
-        subprocess.call([sys.executable, tool_path+'/rename_files.py', curDir, FROM_PROJECT_ID, TO_PROJECT_ID])
+        if PREFIX in curDir:
+            subprocess.call([sys.executable, tool_path+'/rename_files.py', curDir, FROM_PROJECT_ID, TO_PROJECT_ID])
 
 # Replace gameID in file *.js
 curDir = to_project_dir
 for root, dirs, files in os.walk(curDir):
     for file in files:
-        if file.endswith(".js"):
+        if file.endswith(".js") and PREFIX in root:
             if not file.endswith("Config" + TO_PROJECT_ID + ".js"):
                  replaceFileContent(os.path.join(root, file), FROM_PROJECT_ID, TO_PROJECT_ID)
 
@@ -92,7 +93,7 @@ curDir = to_project_dir
 for root, dirs, files in os.walk(curDir):
     for file in files:
         if file.endswith(".fire"):
-             replaceFileContent(os.path.join(root, file), FROM_PROJECT_ID, TO_PROJECT_ID)
+            replaceFileContent(os.path.join(root, file), FROM_PROJECT_ID, TO_PROJECT_ID)
 
 shutil.rmtree(from_project_dir, ignore_errors=True)
 os.popen('open -a CocosCreator')

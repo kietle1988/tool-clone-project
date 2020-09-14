@@ -93,27 +93,19 @@ def replaceFileContent(filename, old_string, new_string):
         s = s.replace(old_string, new_string)
         f.write(s)
 
-def changeScriptRefInPrefab(filePath):
-    remove_uid, remove_file = getFileNameAndUID(filePath)
-
-    # Predict the file to replace
-    # Ex: from_name is "CardItem3997" ==> file to replace to_name is "CardItem1234"
-    by_file = remove_file.replace(FROM_PROJECT_ID, TO_PROJECT_ID)
-
-    # Find the to_uid
-    if by_file is None:
-        print('CANNOT FIND FILE', filePath)
-        return
-
-    by_file_path = find(by_file + '.js', quick_scripts_path + '/' + PREFIX + 'Scripts')
-    by_uid, by_name = getFileNameAndUID(by_file_path)
+def changeScriptRefInPrefab(root_path, by_file_name):
+    by_file_path = os.path.join(root_path, by_file_name)
+    by_uid, by_file = getFileNameAndUID(by_file_path)
+    remove_file_path = os.path.join(root_path.replace(PREFIX, ''), by_file_name.replace(TO_PROJECT_ID, FROM_PROJECT_ID))
+    remove_uid, remove_name = getFileNameAndUID(remove_file_path)
 
 #     print("Replace {0} in file {1} by {2} in file {3}".format(remove_uid, remove_file, by_uid, by_file))
 
     curDir = to_project_dir
     for root, dirs, files in os.walk(curDir):
         for file in files:
-             replaceFileContent(os.path.join(root, file), remove_uid, by_uid)
+            if PREFIX in root:
+                replaceFileContent(os.path.join(root, file), remove_uid, by_uid)
 
     curDir = to_project_dir
     for root, dirs, files in os.walk(curDir):
@@ -248,11 +240,21 @@ for root, dirs, files in os.walk(curDir):
 
 
 print("############ 2.CHANGE SCRIPTS REFERENCES IN PREFAB, SCENE ############")
-curDir = quick_scripts_path + '/Scripts'
+curDir = quick_scripts_path
 for root, dirs, files in os.walk(curDir):
     for file in files:
-        if file.endswith(".js"):
-            changeScriptRefInPrefab(os.path.join(root, file))
+        if file.endswith(".js") and PREFIX in root:
+            changeScriptRefInPrefab(root, file)
+
+# curDir = quick_scripts_path
+# for dir in os.listdir(curDir):
+#     if os.path.isdir(os.path.join(curDir, dir)) :
+#         if dir.startswith(PREFIX):
+#             print("==>>",dir)
+#             for root, dirs, files in os.walk(os.path.join(curDir, dir)):
+#                 for file in files:
+#                     if file.endswith(".js"):
+#                         changeScriptRefInPrefab(os.path.join(root, file))
 
 print('')
 print("############ 3.CHANGE ASSETS IMAGES .PNG, JPG REF IN PREFAB, SCENE ############")
