@@ -340,4 +340,3 @@ except OSError:
     pass
 
 os.popen('open -a CocosCreator')
-line2
