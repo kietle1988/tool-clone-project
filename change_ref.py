@@ -15,6 +15,7 @@ TO_PROJECT_ID = config.TO_PROJECT_ID
 FROM_PROJECT = config.FROM_PROJECT
 TO_PROJECT = config.TO_PROJECT
 USER_DEFINE_TYPE = config.USER_DEFINE_TYPE
+PREFIX = "_!@#$%_"
 
 def find(name, path):
     for root, dirs, files in os.walk(path):
@@ -104,7 +105,7 @@ def changeScriptRefInPrefab(filePath):
         print('CANNOT FIND FILE', filePath)
         return
 
-    by_file_path = find(by_file + '.js', quick_scripts_path + '/_Scripts')
+    by_file_path = find(by_file + '.js', quick_scripts_path + '/' + PREFIX + 'Scripts')
     by_uid, by_name = getFileNameAndUID(by_file_path)
 
 #     print("Replace {0} in file {1} by {2} in file {3}".format(remove_uid, remove_file, by_uid, by_file))
@@ -122,7 +123,7 @@ def changeScriptRefInPrefab(filePath):
 
 def changeImageRefInPrefab(filePath, fileName, ext) :
     to_replaced_uuid = getImageUID(filePath, fileName, ext)
-    replace_by_file_path = filePath.replace('Assets', '_Assets')
+    replace_by_file_path = filePath.replace('Assets', PREFIX + 'Assets')
     replace_by_file_path = replace_by_file_path.replace(FROM_PROJECT_ID, TO_PROJECT_ID)
     replace_by_uuid = getImageUID(replace_by_file_path, fileName, ext)
     if to_replaced_uuid == None or replace_by_uuid == None:
@@ -142,7 +143,7 @@ def changeImageRefInPrefab(filePath, fileName, ext) :
 
 def changeFontRef(filePath, fileName) :
     to_replaced_uuid = getFontUID(filePath)
-    replace_by_file_path = filePath.replace('Assets', '_Assets')
+    replace_by_file_path = filePath.replace('Assets', PREFIX + 'Assets')
     replace_by_file_path = replace_by_file_path.replace(FROM_PROJECT_ID, TO_PROJECT_ID)
     replace_by_uuid = getFontUID(replace_by_file_path)
     if to_replaced_uuid == None or replace_by_uuid == None:
@@ -189,7 +190,7 @@ def getListUIDFromPackedFile(filePath) :
 
 def changeImageInPackerRef(filePath, fileName) :
     fromUIDs = getListUIDFromPackedFile(filePath)
-    toFilePath = filePath.replace('Assets', '_Assets')
+    toFilePath = filePath.replace('Assets', PREFIX + 'Assets')
     toFilePath = toFilePath.replace(FROM_PROJECT_ID, TO_PROJECT_ID)
     toUIDs = getListUIDFromPackedFile(toFilePath)
 
@@ -209,7 +210,7 @@ def changeImageInPackerRef(filePath, fileName) :
 
 def changePrefabRef(filePath, fileName) :
     to_replaced_uuid = getPrefabUID(filePath)
-    replace_by_file_path = filePath.replace('Prefabs', '_Prefabs')
+    replace_by_file_path = filePath.replace('Prefabs', PREFIX + 'Prefabs')
     replace_by_file_path = replace_by_file_path.replace(FROM_PROJECT_ID, TO_PROJECT_ID)
     replace_by_uuid = getPrefabUID(replace_by_file_path)
     if to_replaced_uuid == None or replace_by_uuid == None:
@@ -313,7 +314,7 @@ for root, dirs, files in os.walk(curDir):
 
 print('')
 print("############ 10.UPDATE gameState.js ############")
-curDir = to_project_dir + '/_Scripts'
+curDir = to_project_dir + '/' + PREFIX +'Scripts'
 gameStateName = 'gameState' + TO_PROJECT_ID + '.js'
 for root, dirs, files in os.walk(curDir):
     for file in files:
@@ -329,9 +330,9 @@ print("############ 11.CLEAN ############")
 shutil.rmtree(to_project_dir + '/Scripts', ignore_errors=True)
 shutil.rmtree(to_project_dir + '/Prefabs', ignore_errors=True)
 shutil.rmtree(to_project_dir + '/Assets', ignore_errors=True)
-os.rename(to_project_dir + '/_Scripts', to_project_dir + '/Scripts')
-os.rename(to_project_dir + '/_Prefabs', to_project_dir + '/Prefabs')
-os.rename(to_project_dir + '/_Assets', to_project_dir + '/Assets')
+os.rename(to_project_dir + '/' + PREFIX + 'Scripts', to_project_dir + '/Scripts')
+os.rename(to_project_dir + '/' + PREFIX + 'Prefabs', to_project_dir + '/Prefabs')
+os.rename(to_project_dir + '/' + PREFIX + 'Assets', to_project_dir + '/Assets')
 # shutil.rmtree(root_path + '/' + FROM_PROJECT, ignore_errors=True)
 # shutil.copytree(all_in_one + '/' + FROM_PROJECT, all_in_one + '/assets/' + FROM_PROJECT)
 # shutil.rmtree(all_in_one + '/' + FROM_PROJECT, ignore_errors=True)

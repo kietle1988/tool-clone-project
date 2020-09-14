@@ -13,6 +13,7 @@ FROM_PROJECT_ID = config.FROM_PROJECT_ID
 TO_PROJECT_ID = config.TO_PROJECT_ID
 FROM_PROJECT = config.FROM_PROJECT
 TO_PROJECT = config.TO_PROJECT
+PREFIX = "_!@#$%_"
 
 def clone_folder(fromFolder, toFolder) :
     tool_path = os.path.dirname(os.path.realpath(__file__))
@@ -64,7 +65,7 @@ shutil.rmtree(to_project_dir + '/.git', ignore_errors=True)
 curDir = to_project_dir
 for dir in os.listdir(curDir):
     if os.path.isdir(os.path.join(curDir, dir)) :
-        clone_folder(dir, "_" + dir)
+        clone_folder(dir, PREFIX + dir)
 
 # # 3.Rename file with ID
 curDir = to_project_dir
