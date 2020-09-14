@@ -1,6 +1,6 @@
-FROM_PROJECT_ID = '3991'
-TO_PROJECT_ID = '3989'
-FROM_PROJECT = 'cc-bullfight-' + FROM_PROJECT_ID
+FROM_PROJECT_ID = '3996'
+TO_PROJECT_ID = '54321'
+FROM_PROJECT = 'cc-sicbophuonghoang-' + FROM_PROJECT_ID
 TO_PROJECT = 'cc-rongho-' + TO_PROJECT_ID
 USER_DEFINE_TYPE = ['BigEyeRoadAnalyticItem'+FROM_PROJECT_ID,
                     'DishRoadAnalyticItem'+FROM_PROJECT_ID,

@@ -109,7 +109,7 @@ def changeScriptRefInPrefab(filePath):
 
 #     print("Replace {0} in file {1} by {2} in file {3}".format(remove_uid, remove_file, by_uid, by_file))
 
-    curDir = to_project_dir + '/_Prefabs'
+    curDir = to_project_dir
     for root, dirs, files in os.walk(curDir):
         for file in files:
              replaceFileContent(os.path.join(root, file), remove_uid, by_uid)
@@ -128,7 +128,7 @@ def changeImageRefInPrefab(filePath, fileName, ext) :
     if to_replaced_uuid == None or replace_by_uuid == None:
         return
 #     print("Replace {0} by {1} in file {2}".format(to_replaced_uuid, replace_by_uuid, replace_by_file_path))
-    curDir = to_project_dir + '/_Prefabs'
+    curDir = to_project_dir
     for root, dirs, files in os.walk(curDir):
         for file in files:
             if file.endswith(".prefab"):
@@ -148,7 +148,7 @@ def changeFontRef(filePath, fileName) :
     if to_replaced_uuid == None or replace_by_uuid == None:
         return
 #     print("Replace {0} by {1} in file {2}".format(to_replaced_uuid, replace_by_uuid, replace_by_file_path))
-    curDir = to_project_dir + '/_Prefabs'
+    curDir = to_project_dir
     for root, dirs, files in os.walk(curDir):
         for file in files:
             if file.endswith(".prefab"):
@@ -193,7 +193,7 @@ def changeImageInPackerRef(filePath, fileName) :
     toFilePath = toFilePath.replace(FROM_PROJECT_ID, TO_PROJECT_ID)
     toUIDs = getListUIDFromPackedFile(toFilePath)
 
-    curDir = to_project_dir + '/_Prefabs'
+    curDir = to_project_dir
     for root, dirs, files in os.walk(curDir):
         for file in files:
             if file.endswith(".prefab"):
@@ -215,7 +215,7 @@ def changePrefabRef(filePath, fileName) :
     if to_replaced_uuid == None or replace_by_uuid == None:
         return
 #     print("Replace {0} by {1} in file {2}".format(to_replaced_uuid, replace_by_uuid, replace_by_file_path))
-    curDir = to_project_dir + '/_Prefabs'
+    curDir = to_project_dir
     for root, dirs, files in os.walk(curDir):
         for file in files:
             if file.endswith(".prefab"):
@@ -236,7 +236,7 @@ quick_scripts_path = all_in_one + '/temp/quick-scripts/assets/' + TO_PROJECT
 
 os.popen('killall CocosCreator')
 print("############ 1.CHANGE USER DEFINE TYPE IN PREFAB ############")
-curDir = to_project_dir + '/_Prefabs'
+curDir = to_project_dir
 for root, dirs, files in os.walk(curDir):
     for file in files:
         if file.endswith(".prefab"):
