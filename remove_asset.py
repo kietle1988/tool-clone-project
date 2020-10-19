@@ -35,10 +35,9 @@ def isFilesContainString(dirName, string, targetFilePath):
             fullFilePath = os.path.join(root, file)
 #             print(targetFilePath)
             if targetFilePath != fullFilePath and not file.endswith('.DS_Store') and '.git' not in root:
-#                 print("==>>", fullFilePath)
-#                 if not file.endswith('.png') and not file.endswith('.jpg'):
-                if isFileContainString( os.path.join(root, file), string ) :
-                   return True
+                if not file.endswith('.png') and not file.endswith('.jpg'):
+                    if isFileContainString( os.path.join(root, file), string ) :
+                       return True
     return False
 
 # Return the png uid
@@ -57,6 +56,15 @@ def getImageUID(filePath, fileName, ext):
         else:
             return data['subMetas'][fileName]['uuid']
 
+def getFontUID(filePath):
+    with open(filePath) as json_file:
+        data = json.load(json_file)
+        if 'uuid' not in data:
+            print("FIND NO UUID FOR FILE ", filePath)
+            return None
+        else:
+            return data['uuid']
+
 ########
 # MAIN #
 ########
@@ -72,7 +80,7 @@ curDir = to_project_dir + '/Assets/Images'
 print(curDir)
 for root, dirs, files in os.walk(curDir):
     for file in files:
-        if file.endswith(".png.meta"):
+        if not file.endswith("number_20x20.png.meta") and file.endswith(".png.meta") :
             metaFilePath = os.path.join(root, file)
             uuid = getImageUID(metaFilePath, file, ".png.meta")
             if uuid is not None:
@@ -89,3 +97,65 @@ for root, dirs, files in os.walk(curDir):
                     except OSError:
                         pass
 
+
+curDir = to_project_dir + '/Assets'
+print(curDir)
+for root, dirs, files in os.walk(curDir):
+    for file in files:
+        if file.endswith(".jpg.meta") and 'fonts' not in root:
+            metaFilePath = os.path.join(root, file)
+            uuid = getImageUID(metaFilePath, file, ".jpg.meta")
+            if uuid is not None:
+                result = isFilesContainString(to_project_dir, uuid, metaFilePath)
+                if not result:
+                    #print("isFileContainsString::", result, metaFilePath)
+                    #Remove file
+                    filePath = metaFilePath.replace('.meta', '')
+                    print("REMOVE_FILE::", metaFilePath)
+                    print("REMOVE_FILE::", filePath)
+                    try:
+                        os.remove(metaFilePath)
+                        os.remove(filePath)
+                    except OSError:
+                        pass
+
+curDir = to_project_dir + '/Assets'
+for root, dirs, files in os.walk(curDir):
+    for file in files:
+        if file.endswith(".fnt.meta"):
+            metaFilePath = os.path.join(root, file)
+            uuid = getFontUID(metaFilePath)
+            if uuid is not None:
+                result = isFilesContainString(to_project_dir, uuid, metaFilePath)
+                if not result:
+                    #print("isFileContainsString::", result, metaFilePath)
+                    #Remove file
+                    filePath = metaFilePath.replace('.meta', '')
+                    print("REMOVE_FILE::", metaFilePath)
+                    print("REMOVE_FILE::", filePath)
+                    try:
+                        os.remove(metaFilePath)
+                        os.remove(filePath)
+                    except OSError:
+                        pass
+
+
+curDir = to_project_dir + '/Assets'
+for root, dirs, files in os.walk(curDir):
+    for file in files:
+        if file.endswith(".mp3.meta"):
+            metaFilePath = os.path.join(root, file)
+            uuid = getFontUID(metaFilePath)
+            if uuid is not None:
+                result = isFilesContainString(to_project_dir, uuid, metaFilePath)
+                if not result:
+                    #print("isFileContainsString::", result, metaFilePath)
+                    #Remove file
+                    filePath = metaFilePath.replace('.meta', '')
+                    print("REMOVE_FILE::", metaFilePath)
+                    print("REMOVE_FILE::", filePath)
+                    try:
+                        os.remove(metaFilePath)
+                        os.remove(filePath)
+                    except OSError:
+                        pass
