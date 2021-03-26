@@ -157,6 +157,9 @@ def changeFontRef(root_path, by_file_name) :
 def changeSpineRef(filePath, fileName) :
     changeFontRef(filePath, fileName)
 
+def changeAnimRef(filePath, fileName) :
+    changeFontRef(filePath, fileName)
+
 def changeSoundRef(filePath, fileName) :
     changeFontRef(filePath, fileName)
 
@@ -276,6 +279,14 @@ for root, dirs, files in os.walk(curDir):
     for file in files:
         if file.endswith(".json.meta") and PREFIX in root:
             changeSpineRef(root, file)
+
+print('')
+print("############ 5.1.CHANGE ANIM REF ############")
+curDir = to_project_dir
+for root, dirs, files in os.walk(curDir):
+    for file in files:
+        if file.endswith(".anim") and PREFIX in root:
+            changeAnimRef(root, file)
 
 print('')
 print("############ 6.CHANGE ATLAS REF ############")

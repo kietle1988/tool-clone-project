@@ -18,26 +18,28 @@ PREFIX = "_!@#$%_"
 
 
 def isFileContainString(filename, string):
-    with io.open(filename,"r", encoding="utf-8") as f:
-        try:
-            s = f.read()
-            if string in s:
-                return True
-            else:
+    try:
+        with io.open(filename,"r", encoding="utf-8") as f:
+            try:
+                s = f.read()
+                if string in s:
+                    return True
+                else:
+                    return False
+            except:
+    #             print("CAN READ FILE::", filename)
                 return False
-        except:
-#             print("CAN READ FILE::", filename)
-            return False
+    except IOError:
+        return False
 
 def isFilesContainString(dirName, string, targetFilePath):
     for root, dirs, files in os.walk(dirName):
         for file in files:
             fullFilePath = os.path.join(root, file)
-#             print(targetFilePath)
             if targetFilePath != fullFilePath and not file.endswith('.DS_Store') and '.git' not in root:
                 if not file.endswith('.png') and not file.endswith('.jpg'):
                     if isFileContainString( os.path.join(root, file), string ) :
-                       return True
+                        return True
     return False
 
 # Return the png uid
@@ -55,6 +57,26 @@ def getImageUID(filePath, fileName, ext):
             return None
         else:
             return data['subMetas'][fileName]['uuid']
+
+# Image has outer and inner UID
+def getImageOuterUID(filePath, fileName, ext):
+    with open(filePath) as json_file:
+        data = json.load(json_file)
+        fileName = fileName.replace(ext, '')
+        return data['uuid']
+
+# ChieuTuong.png.meta ref by ChieuTuong.json.meta
+# 1. Check if json.meta file exist
+# 2. Check if json.meta file contains outer uid
+def isOuterUIDInSpines(filePath, fileName, uid) :
+    jsonFileName = fileName.replace('png.meta', 'json.meta')
+    jsonFilePath = filePath.replace(fileName, jsonFileName)
+    return isFileContainString(jsonFilePath, uid)
+
+def isImageUsedByFnt(metaImgPath, imgMetaName) :
+    fntPath = metaImgPath.replace('.png.meta', '.fnt')
+    imgName = imgMetaName.replace('.png.meta', '.png')
+    return isFileContainString(fntPath, imgName)
 
 def getFontUID(filePath):
     with open(filePath) as json_file:
@@ -76,15 +98,19 @@ root_path = os.path.abspath(os.path.join(tool_path, os.pardir))
 from_project_dir = root_path + '/' + FROM_PROJECT
 to_project_dir = root_path + '/' + TO_PROJECT
 
-curDir = to_project_dir + '/Assets/Images'
+curDir = to_project_dir + '/Assets'
 print(curDir)
 for root, dirs, files in os.walk(curDir):
     for file in files:
-        if not file.endswith("number_20x20.png.meta") and file.endswith(".png.meta") :
+        if file.endswith("font_chat_1.png.meta") :
             metaFilePath = os.path.join(root, file)
+            outerUID = getImageOuterUID(metaFilePath, file, 'png.meta')
+            isInSpines = isOuterUIDInSpines(metaFilePath, file, outerUID)
+            usedByFont = isImageUsedByFnt(metaFilePath, file)
             uuid = getImageUID(metaFilePath, file, ".png.meta")
-            if uuid is not None:
+            if uuid is not None and not isInSpines and not usedByFont:
                 result = isFilesContainString(to_project_dir, uuid, metaFilePath)
+                print(uuid)
                 if not result:
                     #print("isFileContainsString::", result, metaFilePath)
                     #Remove file
@@ -99,7 +125,6 @@ for root, dirs, files in os.walk(curDir):
 
 
 curDir = to_project_dir + '/Assets'
-print(curDir)
 for root, dirs, files in os.walk(curDir):
     for file in files:
         if file.endswith(".jpg.meta") and 'fonts' not in root:
