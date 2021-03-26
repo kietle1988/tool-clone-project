@@ -156,11 +156,14 @@ for root, dirs, files in os.walk(curDir):
                     #print("isFileContainsString::", result, metaFilePath)
                     #Remove file
                     filePath = metaFilePath.replace('.meta', '')
+                    pngFilePath = metaFilePath.replace('.fnt.meta', '.png')
                     print("REMOVE_FILE::", metaFilePath)
                     print("REMOVE_FILE::", filePath)
+                    print("REMOVE_FILE::", pngFilePath)
                     try:
                         os.remove(metaFilePath)
                         os.remove(filePath)
+                        os.remove(pngFilePath)
                     except OSError:
                         pass
 
