@@ -102,7 +102,7 @@ curDir = to_project_dir + '/Assets'
 print(curDir)
 for root, dirs, files in os.walk(curDir):
     for file in files:
-        if file.endswith("font_chat_1.png.meta") :
+        if file.endswith(".png.meta") :
             metaFilePath = os.path.join(root, file)
             outerUID = getImageOuterUID(metaFilePath, file, 'png.meta')
             isInSpines = isOuterUIDInSpines(metaFilePath, file, outerUID)

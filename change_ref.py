@@ -15,7 +15,7 @@ TO_PROJECT_ID = config.TO_PROJECT_ID
 FROM_PROJECT = config.FROM_PROJECT
 TO_PROJECT = config.TO_PROJECT
 USER_DEFINE_TYPE = config.USER_DEFINE_TYPE
-PREFIX = "_!@#$%_"
+PREFIX = "_PREFIX_"
 
 def find(name, path):
     for root, dirs, files in os.walk(path):
@@ -38,15 +38,13 @@ def getFileNameAndUID(filePath) :
     # Strips the newline character
     content = ''
     for line in Lines:
-        if count == 1:
+        if "_cclegacy._RF.push({}" in line:
             content = line.strip()
-            content = content[20:-14]
             break
-        count = count + 1
 
     infos = content.split(', ')
-    uid = infos[0][1:-1]
-    file_name = infos[1][1:-1]
+    uid = infos[1][1:-1]
+    file_name = infos[2][1:-1]
     return uid, file_name
 
 # Return the png uid
@@ -232,7 +230,7 @@ root_path = os.path.abspath(os.path.join(tool_path, os.pardir))
 all_in_one = os.path.abspath(os.path.join(root_path, os.pardir))
 from_project_dir = root_path + '/' + FROM_PROJECT
 to_project_dir = root_path + '/' + TO_PROJECT
-quick_scripts_path = all_in_one + '/temp/quick-scripts/assets/' + TO_PROJECT
+quick_scripts_path = all_in_one + '/temp/programming/packer-driver/targets/editor/mods/fs/0/assets/' + TO_PROJECT
 
 os.popen('killall CocosCreator')
 print("############ 1.CHANGE USER DEFINE TYPE IN PREFAB ############")
@@ -253,104 +251,104 @@ for root, dirs, files in os.walk(curDir):
         if file.endswith(".js") and PREFIX in root:
             changeScriptRef(root, file)
 
-print('')
-print("############ 3.CHANGE ASSETS IMAGES .PNG, JPG REF IN PREFAB, SCENE ############")
-curDir = to_project_dir
-for root, dirs, files in os.walk(curDir):
-    for file in files:
-        if PREFIX in root:
-            if file.endswith(".png.meta"):
-                changeImageRef(root, file, ".png.meta")
-            if file.endswith(".jpg.meta"):
-                changeImageRef(root, file, ".jpg.meta")
-
-print('')
-print("############ 4.CHANGE FONT REF IN PREFAB, SCENE ############")
-curDir = to_project_dir
-for root, dirs, files in os.walk(curDir):
-    for file in files:
-        if file.endswith(".fnt.meta") and PREFIX in root:
-            changeFontRef(root, file)
-
-print('')
-print("############ 5.CHANGE SKELETON REF ############")
-curDir = to_project_dir
-for root, dirs, files in os.walk(curDir):
-    for file in files:
-        if file.endswith(".json.meta") and PREFIX in root:
-            changeSpineRef(root, file)
-
-print('')
-print("############ 5.1.CHANGE ANIM REF ############")
-curDir = to_project_dir
-for root, dirs, files in os.walk(curDir):
-    for file in files:
-        if file.endswith(".anim") and PREFIX in root:
-            changeAnimRef(root, file)
-
-print('')
-print("############ 6.CHANGE ATLAS REF ############")
-curDir = to_project_dir + '/Assets'
-for root, dirs, files in os.walk(curDir):
-    for file in files:
-        if file.endswith(".plist.meta") and PREFIX in root:
-            changeAtlasRef(root, file)
-
-print('')
-print("############ 7.CHANGE SOUND REF ############")
-curDir = to_project_dir
-for root, dirs, files in os.walk(curDir):
-    for file in files:
-        if file.endswith(".mp3.meta") and PREFIX in root:
-            changeSoundRef(root, file)
-
-print('')
-print("############ 8.CHANGE IMAGE IN TEXTURE PACKER REF ############")
-curDir = to_project_dir
-for root, dirs, files in os.walk(curDir):
-    for file in files:
-        if file.endswith(".plist.meta"):
-            changeImageInPackerRef(root, file)
-
-print('')
-print("############ 9.CHANGE PREFAB REF IN SCENE ############")
-curDir = to_project_dir
-for root, dirs, files in os.walk(curDir):
-    for file in files:
-        if file.endswith(".prefab.meta") and PREFIX in root:
-            changePrefabRef(root, file)
-
-print('')
-print("############ 10.UPDATE gameState.js ############")
-curDir = to_project_dir
-gameStateName = 'gameState' + TO_PROJECT_ID + '.js'
-for root, dirs, files in os.walk(curDir):
-    for file in files:
-        if gameStateName in file and PREFIX in root:
-            oldGameStateName = gameStateName.replace(TO_PROJECT_ID, FROM_PROJECT_ID)
-            shutil.rmtree(os.path.join(root, oldGameStateName), ignore_errors=True)
-            shutil.copy(os.path.join(root, gameStateName), os.path.join(root, oldGameStateName))
-            replaceFileContent(os.path.join(root, oldGameStateName), TO_PROJECT_ID, FROM_PROJECT_ID)
-            break
-
-print('')
-print("############ 11.CLEAN ############")
-curDir = to_project_dir
-for dir in os.listdir(curDir):
-    full_dir = os.path.join(curDir, dir)
-    if os.path.isdir(full_dir) and PREFIX in full_dir:
-        old_dir = full_dir.replace(PREFIX, '')
-        shutil.rmtree(old_dir, ignore_errors=True)
-        os.rename(full_dir, old_dir)
-
-backupFile = root_path + '/' + FROM_PROJECT
-if os.path.isfile(backupFile + '.zip'):
-    with ZipFile(backupFile + '.zip', 'r') as zipObj:
-       zipObj.extractall(backupFile)
-
-try:
-    os.remove(backupFile + '.zip')
-except OSError:
-    pass
+# print('')
+# print("############ 3.CHANGE ASSETS IMAGES .PNG, JPG REF IN PREFAB, SCENE ############")
+# curDir = to_project_dir
+# for root, dirs, files in os.walk(curDir):
+#     for file in files:
+#         if PREFIX in root:
+#             if file.endswith(".png.meta"):
+#                 changeImageRef(root, file, ".png.meta")
+#             if file.endswith(".jpg.meta"):
+#                 changeImageRef(root, file, ".jpg.meta")
+#
+# print('')
+# print("############ 4.CHANGE FONT REF IN PREFAB, SCENE ############")
+# curDir = to_project_dir
+# for root, dirs, files in os.walk(curDir):
+#     for file in files:
+#         if file.endswith(".fnt.meta") and PREFIX in root:
+#             changeFontRef(root, file)
+#
+# print('')
+# print("############ 5.CHANGE SKELETON REF ############")
+# curDir = to_project_dir
+# for root, dirs, files in os.walk(curDir):
+#     for file in files:
+#         if file.endswith(".json.meta") and PREFIX in root:
+#             changeSpineRef(root, file)
+#
+# print('')
+# print("############ 5.1.CHANGE ANIM REF ############")
+# curDir = to_project_dir
+# for root, dirs, files in os.walk(curDir):
+#     for file in files:
+#         if file.endswith(".anim") and PREFIX in root:
+#             changeAnimRef(root, file)
+#
+# print('')
+# print("############ 6.CHANGE ATLAS REF ############")
+# curDir = to_project_dir + '/Assets'
+# for root, dirs, files in os.walk(curDir):
+#     for file in files:
+#         if file.endswith(".plist.meta") and PREFIX in root:
+#             changeAtlasRef(root, file)
+#
+# print('')
+# print("############ 7.CHANGE SOUND REF ############")
+# curDir = to_project_dir
+# for root, dirs, files in os.walk(curDir):
+#     for file in files:
+#         if file.endswith(".mp3.meta") and PREFIX in root:
+#             changeSoundRef(root, file)
+#
+# print('')
+# print("############ 8.CHANGE IMAGE IN TEXTURE PACKER REF ############")
+# curDir = to_project_dir
+# for root, dirs, files in os.walk(curDir):
+#     for file in files:
+#         if file.endswith(".plist.meta"):
+#             changeImageInPackerRef(root, file)
+#
+# print('')
+# print("############ 9.CHANGE PREFAB REF IN SCENE ############")
+# curDir = to_project_dir
+# for root, dirs, files in os.walk(curDir):
+#     for file in files:
+#         if file.endswith(".prefab.meta") and PREFIX in root:
+#             changePrefabRef(root, file)
+#
+# print('')
+# print("############ 10.UPDATE gameState.ts ############")
+# curDir = to_project_dir
+# gameStateName = 'gameState' + TO_PROJECT_ID + '.ts'
+# for root, dirs, files in os.walk(curDir):
+#     for file in files:
+#         if gameStateName in file and PREFIX in root:
+#             oldGameStateName = gameStateName.replace(TO_PROJECT_ID, FROM_PROJECT_ID)
+#             shutil.rmtree(os.path.join(root, oldGameStateName), ignore_errors=True)
+#             shutil.copy(os.path.join(root, gameStateName), os.path.join(root, oldGameStateName))
+#             replaceFileContent(os.path.join(root, oldGameStateName), TO_PROJECT_ID, FROM_PROJECT_ID)
+#             break
+#
+# print('')
+# print("############ 11.CLEAN ############")
+# curDir = to_project_dir
+# for dir in os.listdir(curDir):
+#     full_dir = os.path.join(curDir, dir)
+#     if os.path.isdir(full_dir) and PREFIX in full_dir:
+#         old_dir = full_dir.replace(PREFIX, '')
+#         shutil.rmtree(old_dir, ignore_errors=True)
+#         os.rename(full_dir, old_dir)
+#
+# backupFile = root_path + '/' + FROM_PROJECT
+# if os.path.isfile(backupFile + '.zip'):
+#     with ZipFile(backupFile + '.zip', 'r') as zipObj:
+#        zipObj.extractall(backupFile)
+#
+# try:
+#     os.remove(backupFile + '.zip')
+# except OSError:
+#     pass
 
 os.popen('open -a CocosCreator')

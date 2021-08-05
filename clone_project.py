@@ -13,7 +13,7 @@ FROM_PROJECT_ID = config.FROM_PROJECT_ID
 TO_PROJECT_ID = config.TO_PROJECT_ID
 FROM_PROJECT = config.FROM_PROJECT
 TO_PROJECT = config.TO_PROJECT
-PREFIX = "_!@#$%_"
+PREFIX = "_PREFIX_"
 
 def clone_folder(fromFolder, toFolder) :
     tool_path = os.path.dirname(os.path.realpath(__file__))
@@ -48,7 +48,7 @@ root_path = os.path.abspath(os.path.join(tool_path, os.pardir))
 from_project_dir = root_path + '/' + FROM_PROJECT
 to_project_dir = root_path + '/' + TO_PROJECT
 
-os.popen('killall CocosCreator')
+# os.popen('killall CocosCreator')
 print('##### BACKUP FILES ######')
 backupFile = root_path + '/' + FROM_PROJECT
 if os.path.isfile(backupFile + '.zip'):
@@ -84,6 +84,14 @@ for root, dirs, files in os.walk(curDir):
             if not file.endswith("Config" + TO_PROJECT_ID + ".js"):
                  replaceFileContent(os.path.join(root, file), FROM_PROJECT_ID, TO_PROJECT_ID)
 
+# Replace gameID in file *.ts
+curDir = to_project_dir
+for root, dirs, files in os.walk(curDir):
+    for file in files:
+        if file.endswith(".ts") and PREFIX in root:
+            if not file.endswith("Config" + TO_PROJECT_ID + ".ts"):
+                 replaceFileContent(os.path.join(root, file), FROM_PROJECT_ID, TO_PROJECT_ID)
+
 # Rename file scene
 curDir = to_project_dir
 subprocess.call([sys.executable, tool_path+'/rename_files.py', curDir, FROM_PROJECT_ID, TO_PROJECT_ID])
@@ -96,4 +104,4 @@ for root, dirs, files in os.walk(curDir):
             replaceFileContent(os.path.join(root, file), FROM_PROJECT_ID, TO_PROJECT_ID)
 
 shutil.rmtree(from_project_dir, ignore_errors=True)
-os.popen('open -a CocosCreator')
+# os.popen('open -a CocosCreator')
