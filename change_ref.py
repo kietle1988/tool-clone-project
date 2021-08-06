@@ -56,12 +56,11 @@ def getImageUID(filePath, fileName, ext):
     with open(filePath) as json_file:
         data = json.load(json_file)
         fileName = fileName.replace(ext, '')
-        result = ''
-        if fileName not in data['subMetas']:
+        if "redirect" not in data['userData']:
             print("FIND NO UUID FOR FILE ", filePath)
             return None
         else:
-            return data['subMetas'][fileName]['uuid']
+            return data['userData']['redirect']
 
 # Return the fnt uid
 # filePath:                 cc-newgame-1234/Assets/Font/MyriadR_Gold-export.fnt.meta
@@ -251,17 +250,17 @@ for root, dirs, files in os.walk(curDir):
         if file.endswith(".js") and PREFIX in root:
             changeScriptRef(root, file)
 
-# print('')
-# print("############ 3.CHANGE ASSETS IMAGES .PNG, JPG REF IN PREFAB, SCENE ############")
-# curDir = to_project_dir
-# for root, dirs, files in os.walk(curDir):
-#     for file in files:
-#         if PREFIX in root:
-#             if file.endswith(".png.meta"):
-#                 changeImageRef(root, file, ".png.meta")
-#             if file.endswith(".jpg.meta"):
-#                 changeImageRef(root, file, ".jpg.meta")
-#
+print('')
+print("############ 3.CHANGE ASSETS IMAGES .PNG, JPG REF IN PREFAB, SCENE ############")
+curDir = to_project_dir
+for root, dirs, files in os.walk(curDir):
+    for file in files:
+        if PREFIX in root:
+            if file.endswith(".png.meta"):
+                changeImageRef(root, file, ".png.meta")
+            if file.endswith(".jpg.meta"):
+                changeImageRef(root, file, ".jpg.meta")
+
 # print('')
 # print("############ 4.CHANGE FONT REF IN PREFAB, SCENE ############")
 # curDir = to_project_dir
