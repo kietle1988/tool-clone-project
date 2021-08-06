@@ -227,103 +227,103 @@ to_project_dir = root_path + '/' + TO_PROJECT
 quick_scripts_path = all_in_one + '/temp/programming/packer-driver/targets/editor/mods/fs/0/assets/' + TO_PROJECT
 
 os.popen('killall CocosCreator')
-# print("############ 1.CHANGE USER DEFINE TYPE IN PREFAB ############")
-# curDir = to_project_dir
-# for root, dirs, files in os.walk(curDir):
-#     for file in files:
-#         if file.endswith(".prefab"):
-#             for fromCustomType in USER_DEFINE_TYPE:
-#                 toCustomType = fromCustomType.replace(FROM_PROJECT_ID, TO_PROJECT_ID)
-#                 if toCustomType is not None:
-#                     replaceFileContent(os.path.join(root, file), fromCustomType, toCustomType)
-#
-#
-# print("############ 2.CHANGE SCRIPTS REFERENCES IN PREFAB, SCENE ############")
-# curDir = quick_scripts_path
-# for root, dirs, files in os.walk(curDir):
-#     for file in files:
-#         if file.endswith(".js") and PREFIX in root:
-#             changeScriptRef(root, file)
-#
-# print('')
-# print("############ 3.CHANGE ASSETS IMAGES .PNG, JPG REF IN PREFAB, SCENE ############")
-# curDir = to_project_dir
-# for root, dirs, files in os.walk(curDir):
-#     for file in files:
-#         if PREFIX in root:
-#             if file.endswith(".png.meta"):
-#                 changeImageRef(root, file, ".png.meta")
-#             if file.endswith(".jpg.meta"):
-#                 changeImageRef(root, file, ".jpg.meta")
-#
-# print('')
-# print("############ 4.CHANGE FONT REF IN PREFAB, SCENE ############")
-# curDir = to_project_dir
-# for root, dirs, files in os.walk(curDir):
-#     for file in files:
-#         if file.endswith(".fnt.meta") and PREFIX in root:
-#             changeFontRef(root, file)
+print("############ 1.CHANGE USER DEFINE TYPE IN PREFAB ############")
+curDir = to_project_dir
+for root, dirs, files in os.walk(curDir):
+    for file in files:
+        if file.endswith(".prefab"):
+            for fromCustomType in USER_DEFINE_TYPE:
+                toCustomType = fromCustomType.replace(FROM_PROJECT_ID, TO_PROJECT_ID)
+                if toCustomType is not None:
+                    replaceFileContent(os.path.join(root, file), fromCustomType, toCustomType)
 
-# print('')
-# print("############ 5.CHANGE SKELETON REF ############")
-# curDir = to_project_dir
-# for root, dirs, files in os.walk(curDir):
-#     for file in files:
-#         if file.endswith(".json.meta") and PREFIX in root:
-#             print(file)
-#             changeSpineRef(root, file)
-#
-# print('')
-# print("############ 5.1.CHANGE ANIM REF ############")
-# curDir = to_project_dir
-# for root, dirs, files in os.walk(curDir):
-#     for file in files:
-#         if file.endswith(".anim") and PREFIX in root:
-#             print(file)
-#             changeAnimRef(root, file)
-#
-# print('')
-# print("############ 6.CHANGE ATLAS REF ############")
-# curDir = to_project_dir + '/Assets'
-# for root, dirs, files in os.walk(curDir):
-#     for file in files:
-#         if file.endswith(".plist.meta") and PREFIX in root:
-#             print(file)
-#             changeAtlasRef(root, file)
-#
-# curDir = to_project_dir + '/resources'
-# for root, dirs, files in os.walk(curDir):
-#     for file in files:
-#         print(file)
-#         if file.endswith(".plist.meta") and PREFIX in root:
-#             changeAtlasRef(root, file)
-#
-# print('')
-# print("############ 7.CHANGE SOUND REF ############")
-# curDir = to_project_dir
-# for root, dirs, files in os.walk(curDir):
-#     for file in files:
-#         if file.endswith(".mp3.meta") and PREFIX in root:
-#             changeSoundRef(root, file)
-#
-# print('')
-# print("############ 8.CHANGE IMAGE IN TEXTURE PACKER REF ############")
-# curDir = to_project_dir
-# for root, dirs, files in os.walk(curDir):
-#     for file in files:
-#         if file.endswith(".plist.meta"):
-#             print(file)
-#             changeImageInPackerRef(root, file)
-#
-# print('')
-# print("############ 9.CHANGE PREFAB REF IN SCENE ############")
-# curDir = to_project_dir
-# for root, dirs, files in os.walk(curDir):
-#     for file in files:
-#         if file.endswith(".prefab.meta") and PREFIX in root:
-#             print(file)
-#             changePrefabRef(root, file)
-#
+
+print("############ 2.CHANGE SCRIPTS REFERENCES IN PREFAB, SCENE ############")
+curDir = quick_scripts_path
+for root, dirs, files in os.walk(curDir):
+    for file in files:
+        if file.endswith(".js") and PREFIX in root:
+            changeScriptRef(root, file)
+
+print('')
+print("############ 3.CHANGE ASSETS IMAGES .PNG, JPG REF IN PREFAB, SCENE ############")
+curDir = to_project_dir
+for root, dirs, files in os.walk(curDir):
+    for file in files:
+        if PREFIX in root:
+            if file.endswith(".png.meta"):
+                changeImageRef(root, file, ".png.meta")
+            if file.endswith(".jpg.meta"):
+                changeImageRef(root, file, ".jpg.meta")
+
+print('')
+print("############ 4.CHANGE FONT REF IN PREFAB, SCENE ############")
+curDir = to_project_dir
+for root, dirs, files in os.walk(curDir):
+    for file in files:
+        if file.endswith(".fnt.meta") and PREFIX in root:
+            changeFontRef(root, file)
+
+print('')
+print("############ 5.CHANGE SKELETON REF ############")
+curDir = to_project_dir
+for root, dirs, files in os.walk(curDir):
+    for file in files:
+        if file.endswith(".json.meta") and PREFIX in root:
+            print(file)
+            changeSpineRef(root, file)
+
+print('')
+print("############ 5.1.CHANGE ANIM REF ############")
+curDir = to_project_dir
+for root, dirs, files in os.walk(curDir):
+    for file in files:
+        if file.endswith(".anim") and PREFIX in root:
+            print(file)
+            changeAnimRef(root, file)
+
+print('')
+print("############ 6.CHANGE ATLAS REF ############")
+curDir = to_project_dir + '/Assets'
+for root, dirs, files in os.walk(curDir):
+    for file in files:
+        if file.endswith(".plist.meta") and PREFIX in root:
+            print(file)
+            changeAtlasRef(root, file)
+
+curDir = to_project_dir + '/resources'
+for root, dirs, files in os.walk(curDir):
+    for file in files:
+        print(file)
+        if file.endswith(".plist.meta") and PREFIX in root:
+            changeAtlasRef(root, file)
+
+print('')
+print("############ 7.CHANGE SOUND REF ############")
+curDir = to_project_dir
+for root, dirs, files in os.walk(curDir):
+    for file in files:
+        if file.endswith(".mp3.meta") and PREFIX in root:
+            changeSoundRef(root, file)
+
+print('')
+print("############ 8.CHANGE IMAGE IN TEXTURE PACKER REF ############")
+curDir = to_project_dir
+for root, dirs, files in os.walk(curDir):
+    for file in files:
+        if file.endswith(".plist.meta"):
+            print(file)
+            changeImageInPackerRef(root, file)
+
+print('')
+print("############ 9.CHANGE PREFAB REF IN SCENE ############")
+curDir = to_project_dir
+for root, dirs, files in os.walk(curDir):
+    for file in files:
+        if file.endswith(".prefab.meta") and PREFIX in root:
+            print(file)
+            changePrefabRef(root, file)
+
 print('')
 print("############ 10.UPDATE gameState.ts ############")
 curDir = to_project_dir
