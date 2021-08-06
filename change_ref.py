@@ -314,47 +314,48 @@ os.popen('killall CocosCreator')
 #         if file.endswith(".plist.meta"):
 #             print(file)
 #             changeImageInPackerRef(root, file)
-
-print('')
-print("############ 9.CHANGE PREFAB REF IN SCENE ############")
-curDir = to_project_dir
-for root, dirs, files in os.walk(curDir):
-    for file in files:
-        if file.endswith(".prefab.meta") and PREFIX in root:
-            print(file)
-            changePrefabRef(root, file)
-
+#
 # print('')
-# print("############ 10.UPDATE gameState.ts ############")
+# print("############ 9.CHANGE PREFAB REF IN SCENE ############")
 # curDir = to_project_dir
-# gameStateName = 'gameState' + TO_PROJECT_ID + '.ts'
 # for root, dirs, files in os.walk(curDir):
 #     for file in files:
-#         if gameStateName in file and PREFIX in root:
-#             oldGameStateName = gameStateName.replace(TO_PROJECT_ID, FROM_PROJECT_ID)
-#             shutil.rmtree(os.path.join(root, oldGameStateName), ignore_errors=True)
-#             shutil.copy(os.path.join(root, gameStateName), os.path.join(root, oldGameStateName))
-#             replaceFileContent(os.path.join(root, oldGameStateName), TO_PROJECT_ID, FROM_PROJECT_ID)
-#             break
+#         if file.endswith(".prefab.meta") and PREFIX in root:
+#             print(file)
+#             changePrefabRef(root, file)
 #
-# print('')
-# print("############ 11.CLEAN ############")
-# curDir = to_project_dir
-# for dir in os.listdir(curDir):
-#     full_dir = os.path.join(curDir, dir)
-#     if os.path.isdir(full_dir) and PREFIX in full_dir:
-#         old_dir = full_dir.replace(PREFIX, '')
-#         shutil.rmtree(old_dir, ignore_errors=True)
-#         os.rename(full_dir, old_dir)
-#
-# backupFile = root_path + '/' + FROM_PROJECT
-# if os.path.isfile(backupFile + '.zip'):
-#     with ZipFile(backupFile + '.zip', 'r') as zipObj:
-#        zipObj.extractall(backupFile)
-#
-# try:
-#     os.remove(backupFile + '.zip')
-# except OSError:
-#     pass
+print('')
+print("############ 10.UPDATE gameState.ts ############")
+curDir = to_project_dir
+gameStateName = 'GameState' + TO_PROJECT_ID + '.ts'
+for root, dirs, files in os.walk(curDir):
+    for file in files:
+        if gameStateName in file and PREFIX in root:
+            print(file)
+            oldGameStateName = gameStateName.replace(TO_PROJECT_ID, FROM_PROJECT_ID)
+            shutil.rmtree(os.path.join(root, oldGameStateName), ignore_errors=True)
+            shutil.copy(os.path.join(root, gameStateName), os.path.join(root, oldGameStateName))
+            replaceFileContent(os.path.join(root, oldGameStateName), TO_PROJECT_ID, FROM_PROJECT_ID)
+            break
+
+print('')
+print("############ 11.CLEAN ############")
+curDir = to_project_dir
+for dir in os.listdir(curDir):
+    full_dir = os.path.join(curDir, dir)
+    if os.path.isdir(full_dir) and PREFIX in full_dir:
+        old_dir = full_dir.replace(PREFIX, '')
+        shutil.rmtree(old_dir, ignore_errors=True)
+        os.rename(full_dir, old_dir)
+
+backupFile = root_path + '/' + FROM_PROJECT
+if os.path.isfile(backupFile + '.zip'):
+    with ZipFile(backupFile + '.zip', 'r') as zipObj:
+       zipObj.extractall(backupFile)
+
+try:
+    os.remove(backupFile + '.zip')
+except OSError:
+    pass
 
 os.popen('open -a CocosCreator')
