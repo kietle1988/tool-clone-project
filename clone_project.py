@@ -96,11 +96,11 @@ for root, dirs, files in os.walk(curDir):
 curDir = to_project_dir
 subprocess.call([sys.executable, tool_path+'/rename_files.py', curDir, FROM_PROJECT_ID, TO_PROJECT_ID])
 
-# Replace gameID in file R3997.fire
+# Replace gameID in file R3997.scene
 curDir = to_project_dir
 for root, dirs, files in os.walk(curDir):
     for file in files:
-        if file.endswith(".fire"):
+        if file.endswith(".scene"):
             replaceFileContent(os.path.join(root, file), FROM_PROJECT_ID, TO_PROJECT_ID)
 
 shutil.rmtree(from_project_dir, ignore_errors=True)

@@ -39,9 +39,7 @@ def _textureToSpriteFrame(filePath, fileName, ext):
             print("CAN NOT change texture to sprite-frame ", filePath)
             return None
         else:
-            print('==>> type before', data['userData']['type'])
             data['userData']['type'] = "sprite-frame"
-            print('==>> type after', data['userData']['type'])
 
 def textureToSpriteFrame(root_path, by_file_name, ext) :
     by_file_path = os.path.join(root_path, by_file_name)
